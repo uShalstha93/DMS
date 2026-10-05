@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { @apply bg-paper text-ink font-sans antialiased; }
+  :focus-visible { @apply outline outline-2 outline-offset-2 outline-ledger; }
+}
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed; }
+  .btn-primary { @apply btn bg-ledger text-white hover:bg-ledger-dark; }
+  .btn-secondary { @apply btn border border-rule bg-white text-ink hover:bg-paper; }
+  .btn-danger { @apply btn bg-stamp text-white hover:bg-red-800; }
+  .field { @apply w-full rounded-md border border-rule bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:border-ledger focus:outline-none focus:ring-1 focus:ring-ledger; }
+  .field-error { @apply border-stamp focus:border-stamp focus:ring-stamp; }
+  .label { @apply mb-1 block text-sm font-medium; }
+  .panel { @apply rounded-lg border border-rule bg-white; }
+}
+
+/* ---- A4 print ---- */
+.a4-sheet { width: 210mm; min-height: 297mm; padding: 20mm; background: #fff; box-sizing: border-box; }
+
+@page { size: A4; margin: 0; }
+@media print {
+  html, body { background: #fff !important; }
+  body * { visibility: hidden; }
+  .print-area, .print-area * { visibility: visible; }
+  .print-area { position: absolute; left: 0; top: 0; margin: 0 !important; box-shadow: none !important; border: 0 !important; }
+}
