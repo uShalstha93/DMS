@@ -82,7 +82,7 @@ export default function Login() {
 
           <div className="mt-8 rounded-md border border-rule bg-white p-3 text-xs text-slate-600">
             <p className="font-medium text-ink">Development logins (password: Password@123)</p>
-            <p className="mt-1">operator@dms.local and admin@dms.local → Kathmandu Branch</p>
+            <p className="mt-1">ram@dms.local and hari@dms.local → Head Office</p>
             <p>administrator@dms.local → any branch</p>
           </div>
         </form>

@@ -66,6 +66,7 @@ export default function App() {
 
         <Route path="location" element={<ComingSoon title="Locations" description="Manage locations and their details." />} />
 
+        <Route path="staffs" element={<ComingSoon title='Staffs' description='Manage staffs and their details.' />} />
         <Route path="users" element={<Guard perm="user.manage"><Users /></Guard>} />
         <Route path="branches" element={<Guard perm="branch.manage"><Branches /></Guard>} />
       </Route>
