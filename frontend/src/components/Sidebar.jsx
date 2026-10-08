@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   LayoutDashboard, FileText, FilePlus2, BadgeCheck, Landmark, ChevronDown,
-  ClipboardCheck, MessageSquare, Users, MapPinned
+  ClipboardCheck, MessageSquare, Users, MapPinned, Building2
 } from 'lucide-react';
 import Logo from './Logo';
 
@@ -21,7 +21,7 @@ const GROUPS = [
       { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
       { to: '/documents', label: 'Documents', icon: FileText },
       // { to: '/documents/new', label: 'New document', icon: FilePlus2, perm: 'document.create' },
-      { to: '/membership', label: 'Membership', icon: BadgeCheck },
+      { to: '/membership', label: 'Membership', icon: BadgeCheck, perm: 'membership.view' },
       {
         label: 'Loan',
         icon: Landmark,
@@ -58,8 +58,9 @@ const GROUPS = [
   {
     title: 'Administration',
     items: [
-      { to: '/staffs', label: 'Staffs', icon: Users, perm: 'user.manage' },
-      { to: '/users', label: 'Users and roles', icon: Users, perm: 'user.manage' }
+      { to: '/staffs', label: 'Staffs', icon: Users, perm: 'staff.manage' },
+      { to: '/users', label: 'Users and roles', icon: Users, perm: 'user.manage' },
+      { to: '/branches', label: 'Branches', icon: Building2, perm: 'branch.manage' },
     ],
   },
 ];

@@ -1,21 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../store/authSlice';
+import api from '../api/axios';
 import Logo from '../components/Logo';
 
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token, loading, error } = useSelector((s) => s.auth);
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [branches, setBranches] = useState([]);
+  const [branchError, setBranchError] = useState('');
+  const [form, setForm] = useState({ branch_id: localStorage.getItem('dms_branch') || '', email: '', password: '' });
+
+  // Active branches for the dropdown (public endpoint, no sign-in needed)
+  useEffect(() => {
+    api.get('/auth/branches')
+      .then(({ data }) => {
+        setBranches(data.branches);
+        // forget a remembered branch that no longer exists or was switched off
+        setForm((f) => (data.branches.some((b) => String(b.id) === String(f.branch_id)) ? f : { ...f, branch_id: '' }));
+      })
+      .catch(() => setBranchError('Could not load the branch list. Check your connection and refresh'));
+  }, []);
 
   if (token) return <Navigate to="/" replace />;
 
   const submit = async (e) => {
     e.preventDefault();
     const result = await dispatch(login(form));
-    if (login.fulfilled.match(result)) navigate('/', { replace: true });
+    if (login.fulfilled.match(result)) {
+      localStorage.setItem('dms_branch', form.branch_id); // pre-select it next time
+      navigate('/', { replace: true });
+    }
   };
 
   return (
@@ -37,13 +54,21 @@ export default function Login() {
       <div className="flex items-center justify-center p-6">
         <form onSubmit={submit} className="w-full max-w-sm" noValidate>
           <h2 className="text-2xl font-semibold">Sign in</h2>
-          <p className="mt-1 text-sm text-slate-600">Use the account your administrator created for you.</p>
+          <p className="mt-1 text-sm text-slate-600">Choose your branch, then use the account your administrator created for you.</p>
 
-          {error && (
-            <p role="alert" className="mt-5 rounded-md bg-stamp-tint px-3 py-2 text-sm text-stamp">{error}</p>
+          {(error || branchError) && (
+            <p role="alert" className="mt-5 rounded-md bg-stamp-tint px-3 py-2 text-sm text-stamp">{error || branchError}</p>
           )}
 
           <div className="mt-6">
+            <label htmlFor="branch" className="label">Branch</label>
+            <select id="branch" className="field" value={form.branch_id}
+              onChange={(e) => setForm({ ...form, branch_id: e.target.value })}>
+              <option value="">Choose your branch</option>
+              {branches.map((b) => <option key={b.id} value={b.id}>{b.name} ({b.code})</option>)}
+            </select>
+          </div>
+          <div className="mt-4">
             <label htmlFor="email" className="label">Email</label>
             <input id="email" type="email" autoComplete="username" className="field" value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })} />
@@ -57,7 +82,8 @@ export default function Login() {
 
           <div className="mt-8 rounded-md border border-rule bg-white p-3 text-xs text-slate-600">
             <p className="font-medium text-ink">Development logins (password: Password@123)</p>
-            <p className="mt-1">operator@dms.local · admin@dms.local · administrator@dms.local</p>
+            <p className="mt-1">operator@dms.local and admin@dms.local → Kathmandu Branch</p>
+            <p>administrator@dms.local → any branch</p>
           </div>
         </form>
       </div>

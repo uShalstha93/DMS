@@ -8,14 +8,15 @@ export default function Users() {
   const me = useSelector((s) => s.auth.user);
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [form, setForm] = useState({ name: '', email: '', password: '', role_id: '' });
+  const [branches, setBranches] = useState([]);
+  const [form, setForm] = useState({ name: '', email: '', password: '', role_id: '', branch_id: '' });
   const [message, setMessage] = useState({ type: '', text: '' });
 
   const load = useCallback(() => {
-    api.get('/users').then(({ data }) => { setUsers(data.users); setRoles(data.roles); })
+    api.get('/users').then(({ data }) => { setUsers(data.users); setRoles(data.roles); setBranches(data.branches); })
       .catch((e) => setMessage({ type: 'error', text: errorMessage(e) }));
   }, []);
-  useEffect(load, [load]);
+  useEffect(() => { load(); }, [load]);
 
   const update = async (id, patch) => {
     try { await api.patch(`/users/${id}`, patch); setMessage({ type: '', text: '' }); load(); }
@@ -26,15 +27,15 @@ export default function Users() {
     e.preventDefault();
     try {
       await api.post('/users', form);
-      setForm({ name: '', email: '', password: '', role_id: '' });
-      setMessage({ type: 'ok', text: 'User created. They can sign in now.' });
+      setForm({ name: '', email: '', password: '', role_id: '', branch_id: '' });
+      setMessage({ type: 'ok', text: 'User created. They can sign in to their branch now.' });
       load();
     } catch (err) { setMessage({ type: 'error', text: errorMessage(err) }); }
   };
 
   return (
     <>
-      <PageHeader title="Users and roles" subtitle="Roles decide what each person can do in DMS." />
+      <PageHeader title="Users and roles" subtitle="The role decides what a person can do. The branch decides where they can sign in." />
 
       {message.text && (
         <p role="alert" className={`mb-4 rounded-md px-3 py-2 text-sm ${message.type === 'ok' ? 'bg-ledger-tint text-ledger-dark' : 'bg-stamp-tint text-stamp'}`}>
@@ -43,12 +44,13 @@ export default function Users() {
       )}
 
       <div className="panel mb-6 overflow-x-auto">
-        <table className="w-full min-w-[640px] text-left text-sm">
+        <table className="w-full min-w-[820px] text-left text-sm">
           <thead className="border-b border-rule bg-paper text-slate-600">
             <tr>
               <th className="px-4 py-3 font-medium">Name</th>
               <th className="px-4 py-3 font-medium">Email</th>
               <th className="px-4 py-3 font-medium">Role</th>
+              <th className="px-4 py-3 font-medium">Branch</th>
               <th className="px-4 py-3 font-medium">Added</th>
               <th className="px-4 py-3 font-medium">Access</th>
             </tr>
@@ -62,6 +64,14 @@ export default function Users() {
                   <select className="field !w-auto" value={u.role_id} disabled={u.id === me.id}
                     onChange={(e) => update(u.id, { role_id: Number(e.target.value) })} aria-label={`Role for ${u.name}`}>
                     {roles.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+                  </select>
+                </td>
+                <td className="px-4 py-3">
+                  <select className="field !w-auto" value={u.branch_id} disabled={u.id === me.id}
+                    onChange={(e) => update(u.id, { branch_id: Number(e.target.value) })} aria-label={`Branch for ${u.name}`}>
+                    {branches.filter((b) => b.is_active || b.id === u.branch_id).map((b) => (
+                      <option key={b.id} value={b.id}>{b.name}</option>
+                    ))}
                   </select>
                 </td>
                 <td className="px-4 py-3">{date(u.created_at)}</td>
@@ -91,6 +101,11 @@ export default function Users() {
             <select id="r" className="field" value={form.role_id} onChange={(e) => setForm({ ...form, role_id: e.target.value })}>
               <option value="">Choose a role</option>
               {roles.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+            </select></div>
+          <div><label htmlFor="b" className="label">Branch</label>
+            <select id="b" className="field" value={form.branch_id} onChange={(e) => setForm({ ...form, branch_id: e.target.value })}>
+              <option value="">Choose a branch</option>
+              {branches.filter((b) => b.is_active).map((b) => <option key={b.id} value={b.id}>{b.name} ({b.code})</option>)}
             </select></div>
         </div>
         <p className="mt-3 text-sm text-slate-600">

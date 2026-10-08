@@ -19,6 +19,7 @@ export default function DocumentList({ pendingOnly = false }) {
   const { items, loading, error } = useSelector((s) => s.documents);
   const canCreate = useSelector(selectCan('document.create'));
   const canViewAll = useSelector(selectCan('document.view_all'));
+  const allBranches = useSelector(selectCan('branch.access_all'));
   const [status, setStatus] = useState(pendingOnly ? 'PENDING' : '');
   const [q, setQ] = useState('');
   const [search, setSearch] = useState('');
@@ -61,6 +62,7 @@ export default function DocumentList({ pendingOnly = false }) {
         <DocumentTable
           documents={items}
           showCreator={canViewAll}
+          showBranch={allBranches}
           empty={pendingOnly ? 'Nothing is waiting for approval right now.' : 'No documents match these filters.'}
         />
       )}

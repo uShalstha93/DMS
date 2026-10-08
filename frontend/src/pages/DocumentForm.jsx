@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import api, { errorMessage } from '../api/axios';
 import PageHeader from '../components/PageHeader';
 import { fetchStats } from '../store/documentsSlice';
@@ -8,7 +8,7 @@ import { LOAN_TYPES } from '../utils/format';
 
 const EMPTY = {
   loan_account_no: '', customer_name: '', loan_type: '', loan_amount: '', interest_rate: '',
-  tenure_months: '', branch: '', purpose: '', remarks: '',
+  tenure_months: '', purpose: '', remarks: '',
 };
 
 function Field({ label, name, form, setForm, errors, type = 'text', children, ...rest }) {
@@ -35,6 +35,7 @@ export default function DocumentForm() {
   const editing = !!id;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const branch = useSelector((s) => s.auth.user?.branch);
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
@@ -75,6 +76,9 @@ export default function DocumentForm() {
       />
       <form onSubmit={submit} noValidate className="panel max-w-3xl p-6">
         {message && <p role="alert" className="mb-5 rounded-md bg-stamp-tint px-3 py-2 text-sm text-stamp">{message}</p>}
+        <p className="mb-5 text-sm text-slate-600">
+          This document will be entered under <span className="font-medium text-ink">{branch?.name}</span>.
+        </p>
 
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Customer name" name="customer_name" {...shared} />
@@ -83,7 +87,6 @@ export default function DocumentForm() {
             <option value="">Choose a type</option>
             {LOAN_TYPES.map((t) => <option key={t}>{t}</option>)}
           </Field>
-          <Field label="Branch" name="branch" {...shared} />
           <Field label="Loan amount" name="loan_amount" type="number" min="0" step="0.01" {...shared} />
           <Field label="Interest rate (% per year)" name="interest_rate" type="number" min="0" step="0.01" {...shared} />
           <Field label="Tenure (months)" name="tenure_months" type="number" min="1" step="1" {...shared} />

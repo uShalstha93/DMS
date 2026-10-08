@@ -12,6 +12,7 @@ export default function Dashboard() {
   const { items, stats, loading } = useSelector((s) => s.documents);
   const canCreate = useSelector(selectCan('document.create'));
   const canViewAll = useSelector(selectCan('document.view_all'));
+  const allBranches = useSelector(selectCan('branch.access_all'));
 
   useEffect(() => {
     dispatch(fetchStats());
@@ -50,6 +51,7 @@ export default function Dashboard() {
         <DocumentTable
           documents={items.slice(0, 8)}
           showCreator={canViewAll}
+          showBranch={allBranches}
           empty={canCreate ? 'No documents yet. Enter your first loan document to get started.' : 'No documents yet.'}
         />
       )}

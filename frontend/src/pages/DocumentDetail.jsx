@@ -84,7 +84,7 @@ export default function DocumentDetail() {
               <Row label="Amount">{money(d.loan_amount)}</Row>
               <Row label="Interest rate">{d.interest_rate != null && `${d.interest_rate}% per year`}</Row>
               <Row label="Tenure">{d.tenure_months && `${d.tenure_months} months`}</Row>
-              <Row label="Branch">{d.branch}</Row>
+              <Row label="Branch">{d.branch_name}</Row>
               <Row label="Purpose">{d.purpose}</Row>
               <Row label="Remarks">{d.remarks}</Row>
               <Row label="Entered by">{d.created_by_name}</Row>

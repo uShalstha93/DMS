@@ -49,7 +49,7 @@ export default function DocumentPrint() {
     ['Loan amount', money(doc.loan_amount)],
     ['Interest rate', doc.interest_rate != null ? `${doc.interest_rate}% per year` : '—'],
     ['Tenure', doc.tenure_months ? `${doc.tenure_months} months` : '—'],
-    ['Branch', doc.branch],
+    ['Branch', doc.branch_name],
     ['Purpose', doc.purpose || '—'],
   ];
 

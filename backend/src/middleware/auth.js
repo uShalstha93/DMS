@@ -1,15 +1,20 @@
 import jwt from 'jsonwebtoken';
 import { pool } from '../db.js';
 
-// Loads the user with their permissions fresh from the DB,
-// so permission changes apply immediately without re-login.
-export async function loadUser(id) {
+export const canAccessAllBranches = (user) => user.permissions.includes('branch.access_all');
+
+// Loads the user, their permissions and the branch they signed in to.
+// Everything is read fresh from the DB on every request, so changes apply immediately.
+// Returns null when the user may not work in that branch (wrong branch, or branch switched off).
+export async function loadUser(id, branchId) {
   const [rows] = await pool.query(
-    `SELECT u.id, u.name, u.email, u.is_active, r.name AS role
+    `SELECT u.id, u.name, u.email, u.is_active, u.branch_id AS home_branch_id, r.name AS role
        FROM users u JOIN roles r ON r.id = u.role_id WHERE u.id = ?`,
     [id]
   );
-  if (!rows[0]) return null;
+  const row = rows[0];
+  if (!row) return null;
+
   const [perms] = await pool.query(
     `SELECT p.code FROM users u
        JOIN role_permissions rp ON rp.role_id = u.role_id
@@ -17,7 +22,23 @@ export async function loadUser(id) {
       WHERE u.id = ?`,
     [id]
   );
-  return { ...rows[0], permissions: perms.map((p) => p.code) };
+  const permissions = perms.map((p) => p.code);
+
+  const [branches] = await pool.query('SELECT id, code, name, is_active FROM branches WHERE id = ?', [branchId]);
+  const branch = branches[0];
+  if (!branch || !branch.is_active) return null;
+  if (row.home_branch_id !== branch.id && !permissions.includes('branch.access_all')) return null;
+
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    is_active: row.is_active,
+    role: row.role,
+    permissions,
+    home_branch_id: row.home_branch_id,
+    branch: { id: branch.id, code: branch.code, name: branch.name }, // the branch signed in to
+  };
 }
 
 export async function authenticate(req, res, next) {
@@ -25,9 +46,9 @@ export async function authenticate(req, res, next) {
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
   if (!token) return res.status(401).json({ message: 'Please sign in to continue' });
   try {
-    const { id } = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await loadUser(id);
-    if (!user || !user.is_active) return res.status(401).json({ message: 'Your account is not active' });
+    const { id, branchId } = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await loadUser(id, branchId); // tokens from before branches existed have no branchId and fail here
+    if (!user || !user.is_active) return res.status(401).json({ message: 'Your session is no longer valid. Please sign in again' });
     req.user = user;
     next();
   } catch {

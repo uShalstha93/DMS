@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Bell, LogOut, Menu, UserCircle2 } from 'lucide-react';
+import { Bell, LogOut, Menu, UserCircle2, ChevronRight } from 'lucide-react';
 import { logout } from '../store/authSlice';
 import { markAllRead, markRead } from '../store/notificationsSlice';
 import { dateTime } from '../utils/format';
@@ -39,8 +39,10 @@ export default function Topbar({ onMenu }) {
       <button className="rounded-md p-2 hover:bg-paper lg:hidden" onClick={onMenu} aria-label="Open menu">
         <Menu size={20} />
       </button>
-      <div className="hidden text-sm text-white lg:block">
-        Signed in as <span className="font-medium text-white">{user?.role}</span>
+      <div className="flex flex-row items-center text-sm text-white">
+        <span className="font-medium">{user?.branch?.name}</span>
+        <span className="mx-2"><ChevronRight size={16} /></span>
+        <span>{user?.name} ({user?.role})</span>
       </div>
 
       <div ref={wrap} className="flex items-center gap-1">
@@ -102,6 +104,9 @@ export default function Topbar({ onMenu }) {
               <p className="text-sm text-slate-400">{user?.email}</p>
               <p className="mt-3 text-sm">
                 Role: <span className="font-medium">{user?.role}</span>
+              </p>
+              <p className="text-sm">
+                Branch: <span className="font-medium">{user?.branch?.name} ({user?.branch?.code})</span>
               </p>
               <p className="mt-2 text-xs text-slate-400">You can:</p>
               <ul className="mt-1 space-y-0.5 text-sm text-slate-300">

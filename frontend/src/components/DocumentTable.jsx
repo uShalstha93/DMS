@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import StatusBadge from './StatusBadge';
 import { date, money } from '../utils/format';
 
-export default function DocumentTable({ documents, showCreator, empty }) {
+export default function DocumentTable({ documents, showCreator, showBranch, empty }) {
   if (!documents.length) {
     return <div className="panel px-6 py-12 text-center text-sm text-slate-500">{empty}</div>;
   }
@@ -15,6 +15,7 @@ export default function DocumentTable({ documents, showCreator, empty }) {
             <th className="px-4 py-3 font-medium">Customer</th>
             <th className="px-4 py-3 font-medium">Loan type</th>
             <th className="px-4 py-3 text-right font-medium">Amount</th>
+            {showBranch && <th className="px-4 py-3 font-medium">Branch</th>}
             {showCreator && <th className="px-4 py-3 font-medium">Entered by</th>}
             <th className="px-4 py-3 font-medium">Entered on</th>
             <th className="px-4 py-3 font-medium">Status</th>
@@ -30,6 +31,7 @@ export default function DocumentTable({ documents, showCreator, empty }) {
               <td className="px-4 py-3">{d.customer_name}</td>
               <td className="px-4 py-3">{d.loan_type}</td>
               <td className="px-4 py-3 text-right tabular-nums">{money(d.loan_amount)}</td>
+              {showBranch && <td className="px-4 py-3">{d.branch_name}</td>}
               {showCreator && <td className="px-4 py-3">{d.created_by_name}</td>}
               <td className="px-4 py-3">{date(d.created_at)}</td>
               <td className="px-4 py-3"><StatusBadge status={d.status} /></td>
