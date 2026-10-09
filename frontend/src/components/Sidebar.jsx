@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   LayoutDashboard, FileText, FilePlus2, BadgeCheck, Landmark, ChevronDown,
-  ClipboardCheck, MessageSquare, Users, MapPinned, Building2
+  ClipboardCheck, MessageSquare, Users, MapPinned, Building2, Briefcase
 } from 'lucide-react';
 import Logo from './Logo';
 
@@ -58,7 +58,7 @@ const GROUPS = [
   {
     title: 'Administration',
     items: [
-      { to: '/staffs', label: 'Staffs', icon: Users, perm: 'staff.manage' },
+      { to: '/staff', label: 'Staff', icon: Briefcase, perm: 'staff.view' },
       { to: '/users', label: 'Users and roles', icon: Users, perm: 'user.manage' },
       { to: '/branches', label: 'Branches', icon: Building2, perm: 'branch.manage' },
     ],
@@ -179,6 +179,8 @@ export default function Sidebar({ open, onClose }) {
             );
           })}
         </nav>
+
+        <text className='flex items-center justify-center text-sm text-slate-400'>&copy; {new Date().getFullYear()} Ushal Bindukar</text>
       </aside>
     </>
   );

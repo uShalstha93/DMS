@@ -10,6 +10,8 @@ import DocumentPrint from './pages/DocumentPrint';
 import Chat from './pages/Chat';
 import Users from './pages/Users';
 import Branches from './pages/Branches';
+import StaffList from './pages/staff/StaffList';
+import StaffForm from './pages/staff/StaffForm';
 import ComingSoon from './pages/ComingSoon';
 import MemberDetail from './pages/membership/MemberDetail';
 import MemberRegistration from './pages/membership/MemberRegistration';
@@ -66,7 +68,10 @@ export default function App() {
 
         <Route path="location" element={<ComingSoon title="Locations" description="Manage locations and their details." />} />
 
-        <Route path="staffs" element={<ComingSoon title='Staffs' description='Manage staffs and their details.' />} />
+        <Route path="staff" element={<Guard perm="staff.view"><StaffList /></Guard>} />
+        <Route path="staff/new" element={<Guard perm="staff.manage"><StaffForm /></Guard>} />
+        <Route path="staff/edit/:staffNo" element={<Guard perm="staff.manage"><StaffForm /></Guard>} />
+
         <Route path="users" element={<Guard perm="user.manage"><Users /></Guard>} />
         <Route path="branches" element={<Guard perm="branch.manage"><Branches /></Guard>} />
       </Route>

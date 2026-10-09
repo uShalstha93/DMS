@@ -6,6 +6,7 @@ import chatRoutes from './routes/chat.js';
 import notificationRoutes from './routes/notifications.js';
 import userRoutes from './routes/users.js';
 import branchRoutes from './routes/branches.js';
+import staffRoutes from './routes/staff.js';
 import addressRoutes from './routes/address.js';
 
 const app = express();
@@ -19,6 +20,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/branches', branchRoutes);
+app.use('/api/staff', staffRoutes);
 app.use('/api/address', addressRoutes);
 
 app.use((_req, res) => res.status(404).json({ message: 'Not found' }));
