@@ -116,7 +116,7 @@ export default function Topbar({ onMenu }) {
           )}
         </div>
 
-        <button className="btn-secondary ml-2" onClick={signOut}>
+        <button className="flex items-center gap-3 px-4 py-2 ml-2 text-sm bg-white rounded text-red-600 hover:bg-red-50 transition-colors" onClick={signOut}>
           <LogOut size={16} />
           <span className="hidden sm:inline">Log out</span>
         </button>
