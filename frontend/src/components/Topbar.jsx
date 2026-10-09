@@ -63,7 +63,7 @@ export default function Topbar({ onMenu }) {
           {panel === 'bell' && (
             <div className="absolute right-0 mt-2 w-80 overflow-hidden rounded-lg border border-rule bg-white shadow-lg">
               <div className="flex items-center justify-between border-b border-rule px-4 py-2.5">
-                <p className="text-sm font-semibold">Notifications</p>
+                <p className="text-sm font-semibold text-slate-600">Notifications</p>
                 {unread > 0 && (
                   <button className="text-xs font-medium text-ledger hover:underline" onClick={() => dispatch(markAllRead())}>
                     Mark all as read
@@ -78,7 +78,7 @@ export default function Topbar({ onMenu }) {
                       onClick={() => openNotification(n)}
                       className={`block w-full border-b border-rule px-4 py-3 text-left last:border-0 hover:bg-paper ${!n.is_read ? 'bg-ledger-tint/40' : ''}`}
                     >
-                      <p className="text-sm font-medium">{n.title}</p>
+                      <p className="text-sm font-medium text-ledger">{n.title}</p>
                       <p className="mt-0.5 text-sm text-slate-600">{n.body}</p>
                       <p className="mt-1 text-xs text-slate-400">{dateTime(n.created_at)}</p>
                     </button>
