@@ -13,7 +13,7 @@ export function connectSocket(token, dispatch) {
   socket.on('notification:new', (n) => {
     dispatch(addNotification(n));
     // A document event means lists and counts on screen may be stale
-    if (n.type.startsWith('member.')) dispatch(fetchMemberStats());
+    if (n.type === 'member.submitted') dispatch(fetchMemberStats()); // sent to approvers only
     if (n.type.startsWith('document.')) {
       dispatch(fetchDocuments());
       dispatch(fetchStats());

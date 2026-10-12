@@ -13,9 +13,10 @@ router.use(authenticate);
 
 // BranchID in memberdetail is the branch CODE. The collation is set so the two tables can be compared.
 const SELECT = `
-  SELECT m.*, b.name AS branch_name
+  SELECT m.*, b.name AS branch_name, cu.name AS created_by_name
     FROM memberdetail m
-    LEFT JOIN branches b ON b.code COLLATE utf8mb4_general_ci = m.BranchID`;
+    LEFT JOIN branches b ON b.code COLLATE utf8mb4_general_ci = m.BranchID
+    LEFT JOIN users cu ON cu.id = m.CreatedBy`;
 
 const LIST_SELECT = `
   SELECT m.MemberNo, m.FullName, m.FullNameEng, m.MobileNo, m.Email, m.CitizenshipNo,
@@ -130,8 +131,8 @@ router.post('/', requirePermission('membership.create'), receiveFiles, wrap(asyn
 
   const columns = Object.values(FIELDS);
   const values = Object.keys(FIELDS).map((key) => v[key] || null);
-  const insert = `INSERT INTO memberdetail (MemberNo, BranchID, ${columns.join(', ')})
-                  VALUES (?, ?, ${columns.map(() => '?').join(', ')})`;
+  const insert = `INSERT INTO memberdetail (MemberNo, BranchID, CreatedBy, ${columns.join(', ')})
+                  VALUES (?, ?, ?, ${columns.map(() => '?').join(', ')})`;
 
   let memberNo = null;
   for (let attempt = 0; attempt < 3 && !memberNo; attempt += 1) {
@@ -142,7 +143,7 @@ router.post('/', requirePermission('membership.create'), receiveFiles, wrap(asyn
     );
     const candidate = nextMemberNo(branch.code, last);
     try {
-      await pool.query(insert, [candidate, branch.code, ...values]);
+      await pool.query(insert, [candidate, branch.code, req.user.id, ...values]); // CreatedBy = the person registering
       memberNo = candidate;
     } catch (e) {
       if (e.code !== 'ER_DUP_ENTRY') throw e; // two people saved at once: try the next number
@@ -196,6 +197,16 @@ router.post('/:memberNo/approve', requirePermission('membership.approve'), wrap(
     [req.user.name, member.MemberNo]
   );
   await refreshApprovers(member.BranchID); // other approvers' pending count drops
+
+  // Tell the person who registered the member (members from before CreatedBy existed have none)
+  if (member.CreatedBy && member.CreatedBy !== req.user.id) {
+    await notify([member.CreatedBy], {
+      type: 'member.approved',
+      title: 'Member approved',
+      body: `${member.FullNameEng || member.FullName} (${member.MemberNo}) was approved by ${req.user.name}`,
+      link: `/membership/${member.MemberNo}`,
+    });
+  }
   res.json({ member: withFlags(req.user, await getMember(member.MemberNo)) });
 }));
 

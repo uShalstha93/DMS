@@ -192,6 +192,7 @@ export default function ViewMemberDetail() {
               <dl>
                 <Item label="Status"><StatusBadge status={approved ? 'APPROVED' : 'PENDING'} /></Item>
                 <Item label="शाखा">{m.branch_name || m.BranchID}</Item>
+                <Item label="Registered by">{m.created_by_name}</Item>
                 {approved && <Item label="Approved by">{m.ApprovedBy}</Item>}
                 <Item label="Entry date">{m.EntryDate?.split('T')[0]}</Item>
                 <Item label="Last modified">{m.ModifiedDate?.split('T')[0]}</Item>
