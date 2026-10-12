@@ -2,6 +2,7 @@ import { io } from 'socket.io-client';
 import { addNotification } from './store/notificationsSlice';
 import { receiveMessage, setOnline, setTyping } from './store/chatSlice';
 import { fetchDocuments, fetchStats } from './store/documentsSlice';
+import { fetchMemberStats } from './store/membersSlice';
 
 let socket = null;
 
@@ -12,11 +13,13 @@ export function connectSocket(token, dispatch) {
   socket.on('notification:new', (n) => {
     dispatch(addNotification(n));
     // A document event means lists and counts on screen may be stale
+    if (n.type.startsWith('member.')) dispatch(fetchMemberStats());
     if (n.type.startsWith('document.')) {
       dispatch(fetchDocuments());
       dispatch(fetchStats());
     }
   });
+  socket.on('member:changed', () => dispatch(fetchMemberStats())); // a member was approved or deleted
   socket.on('chat:message', (m) => dispatch(receiveMessage(m)));
   socket.on('presence:list', (ids) => dispatch(setOnline(ids)));
   socket.on('chat:typing', ({ from }) => dispatch(setTyping(from)));

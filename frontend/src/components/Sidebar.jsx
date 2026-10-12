@@ -49,7 +49,7 @@ const GROUPS = [
   },
   {
     title: 'Review',
-    items: [{ to: '/approvals', label: 'Approvals', icon: ClipboardCheck, perm: 'document.approve', badge: 'pending' }],
+    items: [{ to: '/approvals', label: 'Approvals', icon: ClipboardCheck, perm: ['document.approve', 'membership.approve'], badge: 'pending' }],
   },
   {
     title: 'Team',
@@ -122,7 +122,10 @@ function SubMenu({ item, pathname, permissions, onClose }) {
 export default function Sidebar({ open, onClose }) {
   const { pathname } = useLocation();
   const permissions = useSelector((s) => s.auth.user?.permissions || []);
-  const pending = useSelector((s) => s.documents.stats.PENDING);
+  const docPending = useSelector((s) => s.documents.stats.PENDING);
+  const memberPending = useSelector((s) => s.members.pending);
+  // Approvals badge: pending documents + pending members (only the kinds this person can approve)
+  const pending = (permissions.includes('document.approve') ? docPending : 0) + (permissions.includes('membership.approve') ? memberPending : 0);
   const unreadChat = useSelector((s) => s.chat.users.reduce((n, u) => n + u.unread, 0));
   const counts = { pending, chat: unreadChat };
 
@@ -144,7 +147,7 @@ export default function Sidebar({ open, onClose }) {
 
         <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Main">
           {GROUPS.map((group) => {
-            const items = group.items.filter((i) => !i.perm || permissions.includes(i.perm));
+            const items = group.items.filter((i) => !i.perm || [].concat(i.perm).some((p) => permissions.includes(p)));
             if (!items.length) return null;
             return (
               <div key={group.title} className="mb-5">

@@ -11,7 +11,8 @@ function toFormData(values) {
 }
 
 export const membersApi = {
-  list: () => api.get('/members').then((r) => r.data.members),
+  list: (params) => api.get('/members', { params }).then((r) => r.data.members), // params: { status: 'PENDING' }
+  stats: () => api.get('/members/stats').then((r) => r.data),
   get: (memberNo) => api.get(`/members/${memberNo}`).then((r) => r.data.member),
   save: (values, memberNo) =>
     (memberNo ? api.put(`/members/${memberNo}`, toFormData(values)) : api.post('/members', toFormData(values))).then((r) => r.data.member),

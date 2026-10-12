@@ -3,6 +3,8 @@ import multer from 'multer';
 import { pool } from '../db.js';
 import { authenticate, canAccessAllBranches, requirePermission } from '../middleware/auth.js';
 import { wrap } from '../utils/asyncHandler.js';
+import { notify, usersWithPermission } from '../utils/notify.js';
+import { emitToUser } from '../socket.js';
 import { FIELDS, clean, validate, nextMemberNo, canEditMember } from '../utils/memberRules.js';
 import { imageType, saveImage, removeImage } from '../utils/uploads.js';
 
@@ -34,6 +36,17 @@ const withFlags = (user, member) => ({
 async function getMember(memberNo) {
   const [rows] = await pool.query(`${SELECT} WHERE m.MemberNo = ?`, [memberNo]);
   return rows[0];
+}
+
+// People who can approve members in a branch (BranchID is the branch code)
+async function approversOf(branchCode) {
+  const [rows] = await pool.query('SELECT id FROM branches WHERE code = ?', [branchCode]);
+  return usersWithPermission('membership.approve', 0, rows[0]?.id ?? null);
+}
+
+// Tells approvers' open screens to reload the pending count (no bell message)
+async function refreshApprovers(branchCode) {
+  for (const id of await approversOf(branchCode)) emitToUser(id, 'member:changed');
 }
 
 // ---- photo and signature upload (kept in memory, checked, then written to the uploads folder)
@@ -72,11 +85,25 @@ router.get('/', requirePermission('membership.view'), wrap(async (req, res) => {
   const where = [];
   const params = [];
   if (!canAccessAllBranches(req.user)) { where.push('m.BranchID = ?'); params.push(req.user.branch.code); }
+  if (req.query.status === 'PENDING') where.push('(m.ApprovedStatus = 0 OR m.ApprovedStatus IS NULL)');
   const [rows] = await pool.query(
     `${LIST_SELECT} ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY m.ApprovedStatus ASC, m.EntryDate DESC`,
     params
   );
   res.json({ members: rows.map((m) => withFlags(req.user, m)) });
+}));
+
+// Number of members waiting for approval (for the badge in the sidebar). Must come before "/:memberNo".
+router.get('/stats', requirePermission('membership.approve'), wrap(async (req, res) => {
+  const where = [];
+  const params = [];
+  if (!canAccessAllBranches(req.user)) { where.push('m.BranchID = ?'); params.push(req.user.branch.code); }
+  const [[row]] = await pool.query(
+    `SELECT COUNT(*) AS total, COALESCE(SUM(COALESCE(m.ApprovedStatus, 0) = 0), 0) AS pending
+       FROM memberdetail m ${where.length ? 'WHERE ' + where.join(' AND ') : ''}`,
+    params
+  );
+  res.json({ total: Number(row.total), PENDING: Number(row.pending) });
 }));
 
 router.get('/:memberNo', requirePermission('membership.view'), wrap(async (req, res) => {
@@ -124,6 +151,14 @@ router.post('/', requirePermission('membership.create'), receiveFiles, wrap(asyn
   if (!memberNo) return res.status(409).json({ message: 'Could not create a member number. Try again' });
 
   await attachImages(memberNo, files);
+
+  // Approvers of this branch: bell message + badge, and the member shows up under Approvals
+  await notify(await usersWithPermission('membership.approve', req.user.id, branch.id), {
+    type: 'member.submitted',
+    title: 'New member to approve',
+    body: `${v.fullNameEng} (${memberNo}) was registered by ${req.user.name} (${branch.name})`,
+    link: `/membership/${memberNo}`,
+  });
   res.status(201).json({ member: withFlags(req.user, await getMember(memberNo)) });
 }));
 
@@ -160,6 +195,7 @@ router.post('/:memberNo/approve', requirePermission('membership.approve'), wrap(
     'UPDATE memberdetail SET ApprovedStatus = 1, ApprovedBy = ?, ModifiedDate = NOW() WHERE MemberNo = ?',
     [req.user.name, member.MemberNo]
   );
+  await refreshApprovers(member.BranchID); // other approvers' pending count drops
   res.json({ member: withFlags(req.user, await getMember(member.MemberNo)) });
 }));
 
@@ -171,6 +207,7 @@ router.delete('/:memberNo', requirePermission('membership.delete'), wrap(async (
   await pool.query('DELETE FROM memberdetail WHERE MemberNo = ?', [member.MemberNo]);
   await removeImage('photo', member.PhotoIm);
   await removeImage('signature', member.SignIm);
+  await refreshApprovers(member.BranchID);
   res.json({ ok: true });
 }));
 

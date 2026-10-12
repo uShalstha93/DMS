@@ -14,7 +14,7 @@ const TABS = [
   { value: 'REJECTED', label: 'Rejected' },
 ];
 
-export default function DocumentList({ pendingOnly = false }) {
+export default function DocumentList({ pendingOnly = false, embedded = false }) {
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector((s) => s.documents);
   const canCreate = useSelector(selectCan('document.create'));
@@ -33,9 +33,11 @@ export default function DocumentList({ pendingOnly = false }) {
 
   return (
     <>
-      <PageHeader title={title} subtitle={subtitle}>
-        {canCreate && !pendingOnly && <Link to="/documents/new" className="btn-primary">New document</Link>}
-      </PageHeader>
+      {!embedded && (
+        <PageHeader title={title} subtitle={subtitle}>
+          {canCreate && !pendingOnly && <Link to="/documents/new" className="btn-primary">New document</Link>}
+        </PageHeader>
+      )}
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         {!pendingOnly ? (

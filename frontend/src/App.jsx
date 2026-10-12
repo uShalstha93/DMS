@@ -4,6 +4,7 @@ import AppLayout from './components/AppLayout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import DocumentList from './pages/DocumentList';
+import Approvals from './pages/Approvals';
 import DocumentForm from './pages/DocumentForm';
 import DocumentDetail from './pages/DocumentDetail';
 import DocumentPrint from './pages/DocumentPrint';
@@ -24,7 +25,8 @@ function RequireAuth({ children }) {
 
 // Hides a page from people who lack the permission
 function Guard({ perm, children }) {
-  const allowed = useSelector((s) => s.auth.user?.permissions?.includes(perm));
+  // perm can be one permission or a list (any one of them is enough)
+  const allowed = useSelector((s) => [].concat(perm).some((p) => s.auth.user?.permissions?.includes(p)));
   return allowed ? children : <Navigate to="/" replace />;
 }
 
@@ -41,7 +43,7 @@ export default function App() {
         <Route path="documents/:id/edit" element={<Guard perm="document.create"><DocumentForm /></Guard>} />
         <Route path="documents/:id/print" element={<Guard perm="document.print"><DocumentPrint /></Guard>} />
 
-        <Route path="approvals" element={<Guard perm="document.approve"><DocumentList pendingOnly /></Guard>} />
+        <Route path="approvals" element={<Guard perm={['document.approve', 'membership.approve']}><Approvals /></Guard>} />
 
         <Route path="chat" element={<Guard perm="chat.use"><Chat /></Guard>} />
 
