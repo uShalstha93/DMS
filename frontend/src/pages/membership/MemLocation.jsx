@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import FormField, { StepTitle, bindField } from '../../components/FormField';
+import FormField, { bindField } from '../../components/FormField';
 
 // Default marker icons do not load through the bundler, so point them at the CDN
 L.Marker.prototype.options.icon = L.icon({
@@ -68,8 +68,6 @@ export default function MemLocation({ values, errors, touched, setFieldValue }) 
 
   return (
     <section>
-      <StepTitle>नक्सामा स्थान चयन गर्नुहोस्</StepTitle>
-
       <div className="grid gap-6 lg:grid-cols-[1fr_18rem]">
         <div>
           {/* "isolate" keeps the map's layers below the fixed top bar and sidebar */}

@@ -7,11 +7,14 @@ import notificationRoutes from './routes/notifications.js';
 import userRoutes from './routes/users.js';
 import branchRoutes from './routes/branches.js';
 import staffRoutes from './routes/staff.js';
+import memberRoutes from './routes/members.js';
 import addressRoutes from './routes/address.js';
+import { UPLOAD_ROOT } from './utils/uploads.js';
 
 const app = express();
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }));
 app.use(express.json());
+app.use('/uploads', express.static(UPLOAD_ROOT)); // member photos and signatures
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 app.use('/api/auth', authRoutes);
@@ -21,6 +24,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/staff', staffRoutes);
+app.use('/api/members', memberRoutes);
 app.use('/api/address', addressRoutes);
 
 app.use((_req, res) => res.status(404).json({ message: 'Not found' }));

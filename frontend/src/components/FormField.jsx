@@ -17,11 +17,11 @@ export function StepTitle({ children }) {
 }
 
 // Label + input + error message
-export default function FormField({ label, name, touched, errors, className = '', children }) {
+export default function FormField({ label, name, touched, errors, required = false, className = '', children }) {
   const error = hasError(touched, errors, name) ? errors[name] : null;
   return (
     <div className={className}>
-      <label htmlFor={name} className="label">{label}</label>
+      <label htmlFor={name} className="label">{label}{required && <span className="text-stamp"> *</span>}</label>
       {children}
       {error && <p id={`${name}-error`} className="mt-1 text-sm text-stamp">{error}</p>}
     </div>

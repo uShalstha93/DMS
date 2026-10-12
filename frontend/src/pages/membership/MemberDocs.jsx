@@ -13,8 +13,8 @@ function useFilePreview(file) {
   return url;
 }
 
-function ImagePicker({ label, name, emptyText, file, error, onPick }) {
-  const preview = useFilePreview(file);
+function ImagePicker({ label, name, emptyText, file, existing, error, onPick }) {
+  const preview = useFilePreview(file) || existing; // a new file, or the saved one
   return (
     <div>
       <label htmlFor={name} className="label text-center">{label}</label>
@@ -39,15 +39,15 @@ function ImagePicker({ label, name, emptyText, file, error, onPick }) {
   );
 }
 
-export default function MemberDocs({ values, errors, touched, setFieldValue }) {
+export default function MemberDocs({ values, errors, touched, setFieldValue, existing = {} }) {
   const err = (name) => (touched[name] && errors[name]) || null;
   return (
     <section>
-      <StepTitle>फोटो विवरण</StepTitle>
+      <StepTitle>४. फोटो र हस्ताक्षर</StepTitle>
       <div className="grid gap-6 sm:grid-cols-2 lg:max-w-3xl">
-        <ImagePicker label="फोटो" name="photoIm" emptyText="No photo" file={values.photoIm} error={err('photoIm')}
+        <ImagePicker label="फोटो" name="photoIm" emptyText="No photo" file={values.photoIm} existing={existing.photo} error={err('photoIm')}
           onPick={(file) => file && setFieldValue('photoIm', file)} />
-        <ImagePicker label="हस्ताक्षर" name="signIm" emptyText="No signature" file={values.signIm} error={err('signIm')}
+        <ImagePicker label="हस्ताक्षर" name="signIm" emptyText="No signature" file={values.signIm} existing={existing.sign} error={err('signIm')}
           onPick={(file) => file && setFieldValue('signIm', file)} />
       </div>
     </section>

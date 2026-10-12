@@ -3,17 +3,21 @@ import { NepaliInput } from '@itzsa/nepali-input';
 import FormField, { StepTitle, bindField } from '../../components/FormField';
 import { addressApi } from '../../api/members';
 
-// Form field names for each address block
+// Form field names of the two address blocks
 const PERMANENT = { province: 'province', district: 'district', munVDC: 'munVDC', wardNo: 'wardNo', tole: 'tole' };
 const CURRENT = { province: 'tmpProvince', district: 'tmpDistrict', munVDC: 'tmpMunVDC', wardNo: 'tmpWardNo', tole: 'tmpTole' };
 const KEYS = Object.keys(PERMANENT);
 const LABELS = { province: 'प्रदेश', district: 'जिल्ला', munVDC: 'न.पा./गा.पा.', wardNo: 'वडा नं.', tole: 'टोल' };
 
-// Province -> district -> municipality options, reloaded whenever the parent choice changes
+// Keeps a saved value in the list even if it is not in the options (for example an old spelling)
+const withValue = (items, value, getName = (x) => x, make = (x) => x) =>
+  value && !items.some((i) => getName(i) === value) ? [make(value), ...items] : items;
+
+// Province -> district -> municipality lists from the localgovernments table
 function useAddressOptions(province, district) {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [munvdcs, setMunvdcs] = useState([]);
+  const [municipalities, setMunicipalities] = useState([]);
 
   useEffect(() => {
     addressApi.provinces().then(setProvinces).catch((e) => console.error('Error getting provinces:', e));
@@ -27,22 +31,22 @@ function useAddressOptions(province, district) {
   }, [province]);
 
   useEffect(() => {
-    if (!district) { setMunvdcs([]); return; }
+    if (!district) { setMunicipalities([]); return; }
     let alive = true;
-    addressApi.munvdcs(district).then((d) => alive && setMunvdcs(d)).catch((e) => console.error(e));
+    addressApi.municipalities(province, district).then((m) => alive && setMunicipalities(m)).catch((e) => console.error(e));
     return () => { alive = false; };
-  }, [district]);
+  }, [province, district]);
 
-  return { provinces, districts, munvdcs };
+  return { provinces, districts, municipalities };
 }
 
-function AddressBlock({ names, values, errors, touched, handleChange, setFieldValue, readOnly }) {
-  const { provinces, districts, munvdcs } = useAddressOptions(values[names.province], values[names.district]);
-  const f = { touched, errors };
+function AddressBlock({ names, values, errors, touched, handleChange, setFieldValue, readOnly, required }) {
+  const { provinces, districts, municipalities } = useAddressOptions(values[names.province], values[names.district]);
+  const f = { touched, errors, required };
   const bind = bindField(touched, errors);
-  const clear = (...keys) => keys.forEach((k) => setFieldValue(names[k], '', false));
+  const clear = (...keys) => keys.forEach((k) => setFieldValue(names[k], '', false)); // changing a parent clears what depends on it
 
-  // "Same as permanent": show the copied values instead of inputs
+  // "Same as permanent" is ticked: just show the copied values
   if (readOnly) {
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -62,7 +66,7 @@ function AddressBlock({ names, values, errors, touched, handleChange, setFieldVa
         <select {...bind(names.province)} value={values[names.province]}
           onChange={(e) => { handleChange(e); clear('district', 'munVDC'); }}>
           <option value="">-- छान्नुहोस् --</option>
-          {provinces.map((p) => <option key={p.NProvince} value={p.NProvince}>{p.NProvince}</option>)}
+          {withValue(provinces, values[names.province]).map((p) => <option key={p} value={p}>{p}</option>)}
         </select>
       </FormField>
 
@@ -70,23 +74,27 @@ function AddressBlock({ names, values, errors, touched, handleChange, setFieldVa
         <select {...bind(names.district)} value={values[names.district]} disabled={!values[names.province]}
           onChange={(e) => { handleChange(e); clear('munVDC'); }}>
           <option value="">-- छान्नुहोस् --</option>
-          {districts.map((d) => <option key={d.NDistrict} value={d.NDistrict}>{d.NDistrict}</option>)}
+          {withValue(districts, values[names.district]).map((d) => <option key={d} value={d}>{d}</option>)}
         </select>
       </FormField>
 
       <FormField label={LABELS.munVDC} name={names.munVDC} {...f}>
         <select {...bind(names.munVDC)} value={values[names.munVDC]} disabled={!values[names.district]} onChange={handleChange}>
           <option value="">-- छान्नुहोस् --</option>
-          {munvdcs.map((m) => <option key={m.GNameNepali} value={m.GNameNepali}>{m.GNameNepali}</option>)}
+          {withValue(municipalities, values[names.munVDC], (m) => m.name, (name) => ({ name, type: '' })).map((m) => (
+            <option key={m.name} value={m.name}>{m.type ? `${m.name} (${m.type})` : m.name}</option>
+          ))}
         </select>
       </FormField>
 
       <FormField label={LABELS.wardNo} name={names.wardNo} {...f}>
-        <NepaliInput {...bind(names.wardNo)} type="text" placeholder="वडा नं." value={values[names.wardNo]} onChange={handleChange} />
+        <NepaliInput {...bind(names.wardNo)} type="text" placeholder="वडा नं." value={values[names.wardNo]}
+          onChange={handleChange} className={`${bind('names.wardNo').className} !text-[14px] h-10`} />
       </FormField>
 
-      <FormField label={LABELS.tole} name={names.tole} {...f}>
-        <NepaliInput {...bind(names.tole)} type="text" placeholder="टोल" value={values[names.tole]} onChange={handleChange} />
+      <FormField label={LABELS.tole} name={names.tole} {...f} required={false}>
+        <NepaliInput {...bind(names.tole)} type="text" placeholder="टोल" value={values[names.tole]}
+          onChange={handleChange} className={`${bind('names.tole').className} !text-[14px] h-10`} />
       </FormField>
     </div>
   );
@@ -94,9 +102,10 @@ function AddressBlock({ names, values, errors, touched, handleChange, setFieldVa
 
 export default function AddressDetails(props) {
   const { values, setFieldValue } = props;
-  const [same, setSame] = useState(false);
+  // Ticked by default for a new member; for an existing one, ticked only if both addresses already match
+  const [same, setSame] = useState(() => KEYS.every((k) => (values[PERMANENT[k]] || '') === (values[CURRENT[k]] || '')));
 
-  // While "same as permanent" is ticked, keep the current address in step with the permanent one
+  // While ticked, the current address follows the permanent address
   useEffect(() => {
     if (!same) return;
     KEYS.forEach((k) => setFieldValue(CURRENT[k], values[PERMANENT[k]], false));
@@ -109,10 +118,10 @@ export default function AddressDetails(props) {
 
   return (
     <section>
-      <StepTitle>ठेगाना विवरण</StepTitle>
+      <StepTitle>२. ठेगाना विवरण</StepTitle>
 
       <h3 className="mb-3 font-medium">स्थायी ठेगाना</h3>
-      <AddressBlock names={PERMANENT} {...props} />
+      <AddressBlock names={PERMANENT} {...props} required />
 
       <div className="mb-3 mt-8 flex flex-wrap items-center gap-x-6 gap-y-2">
         <h3 className="font-medium">हालको ठेगाना</h3>

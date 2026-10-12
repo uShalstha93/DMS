@@ -180,7 +180,7 @@ export default function Sidebar({ open, onClose }) {
           })}
         </nav>
 
-        <text className='flex items-center justify-center text-[12px] text-slate-400'>&copy; {new Date().getFullYear()} Ushal Bindukar</text>
+        <span className='flex items-center justify-center text-[12px] text-slate-400'>&copy; {new Date().getFullYear()} Ushal Bindukar</span>
       </aside>
     </>
   );

@@ -7,13 +7,13 @@ export default function FamilyDetails({ values, errors, touched, handleChange })
 
   const text = (name, label, placeholder = label) => (
     <FormField label={label} name={name} {...f}>
-      <NepaliInput {...bind(name)} type="text" placeholder={placeholder} value={values[name]} onChange={handleChange} />
+      <NepaliInput {...bind(name)} type="text" placeholder={placeholder} value={values[name]} onChange={handleChange} className={`${bind('name').className} !text-[14px] h-10`} />
     </FormField>
   );
 
   return (
     <section>
-      <StepTitle>पारिवारिक विवरण</StepTitle>
+      <StepTitle>३. पारिवारिक विवरण</StepTitle>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {text('fatherName', 'बुबाको नाम')}
         {text('motherName', 'आमाको नाम')}

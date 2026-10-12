@@ -14,7 +14,7 @@ import StaffList from './pages/staff/StaffList';
 import StaffForm from './pages/staff/StaffForm';
 import ComingSoon from './pages/ComingSoon';
 import MemberDetail from './pages/membership/MemberDetail';
-import MemberRegistration from './pages/membership/MemberRegistration';
+import MemberForm from './pages/membership/MemberForm';
 import ViewMemberDetail from './pages/membership/ViewMemberDetail';
 
 function RequireAuth({ children }) {
@@ -46,7 +46,8 @@ export default function App() {
         <Route path="chat" element={<Guard perm="chat.use"><Chat /></Guard>} />
 
         <Route path="membership" element={<Guard perm="membership.view"><MemberDetail /></Guard>} />
-        <Route path="membership/new" element={<Guard perm="membership.create"><MemberRegistration /></Guard>} />
+        <Route path="membership/new" element={<Guard perm="membership.create"><MemberForm /></Guard>} />
+        <Route path="membership/edit/:memberNo" element={<Guard perm="membership.edit"><MemberForm /></Guard>} />
         <Route path="membership/:memberNo" element={<Guard perm="membership.view"><ViewMemberDetail /></Guard>} />
 
         <Route path="loan" element={<Navigate to="/loan/request" replace />} />
