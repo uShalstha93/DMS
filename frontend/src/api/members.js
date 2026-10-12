@@ -13,6 +13,9 @@ function toFormData(values) {
 export const membersApi = {
   list: (params) => api.get('/members', { params }).then((r) => r.data.members), // params: { status: 'PENDING' }
   stats: () => api.get('/members/stats').then((r) => r.data),
+  // Locations screen: every member with lat / lng (null when no location is saved)
+  locations: () => api.get('/members/locations').then((r) => r.data.members),
+  saveLocation: (memberNo, lat, lng) => api.patch(`/members/${memberNo}/location`, { lat, lng }).then((r) => r.data.member), // lat/lng null = remove
   get: (memberNo) => api.get(`/members/${memberNo}`).then((r) => r.data.member),
   save: (values, memberNo) =>
     (memberNo ? api.put(`/members/${memberNo}`, toFormData(values)) : api.post('/members', toFormData(values))).then((r) => r.data.member),

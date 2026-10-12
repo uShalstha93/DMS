@@ -44,7 +44,7 @@ const GROUPS = [
           { to: '/loan/mortgage-deed', label: 'Loan Mortgage Deed' },
         ],
       },
-      { to: '/location', label: 'Locations', icon: MapPinned },
+      { to: '/location', label: 'Locations', icon: MapPinned, perm: 'membership.view' },
     ],
   },
   {

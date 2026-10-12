@@ -5,7 +5,7 @@ import { authenticate, canAccessAllBranches, requirePermission } from '../middle
 import { wrap } from '../utils/asyncHandler.js';
 import { notify, usersWithPermission } from '../utils/notify.js';
 import { emitToUser } from '../socket.js';
-import { FIELDS, clean, validate, nextMemberNo, canEditMember } from '../utils/memberRules.js';
+import { FIELDS, clean, validate, nextMemberNo, canEditMember, locationOf, checkLocation } from '../utils/memberRules.js';
 import { imageType, saveImage, removeImage } from '../utils/uploads.js';
 
 const router = Router();
@@ -92,6 +92,50 @@ router.get('/', requirePermission('membership.view'), wrap(async (req, res) => {
     params
   );
   res.json({ members: rows.map((m) => withFlags(req.user, m)) });
+}));
+
+// ---- LOCATIONS (for the Locations screen). Must come before "/:memberNo".
+const LOCATION_SELECT = `
+  SELECT m.MemberNo, m.FullName, m.FullNameEng, m.MobileNo, m.Province, m.District, m.MUNVDC, m.WardNo, m.Tole,
+         m.Latitude, m.Longitude, m.BranchID, b.name AS branch_name
+    FROM memberdetail m
+    LEFT JOIN branches b ON b.code COLLATE utf8mb4_general_ci = m.BranchID`;
+
+// Latitude / Longitude columns become lat / lng numbers (or null when no location is saved)
+const locationRow = (user, row) => {
+  const { Latitude, Longitude, ...rest } = row;
+  return { ...rest, ...locationOf(row), can_update: user.permissions.includes('membership.edit') };
+};
+
+router.get('/locations', requirePermission('membership.view'), wrap(async (req, res) => {
+  const where = [];
+  const params = [];
+  if (!canAccessAllBranches(req.user)) { where.push('m.BranchID = ?'); params.push(req.user.branch.code); }
+  const [rows] = await pool.query(
+    `${LOCATION_SELECT} ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY m.MemberNo`, params
+  );
+  res.json({ members: rows.map((r) => locationRow(req.user, r)) });
+}));
+
+// Saves only the location. Allowed for anyone who can edit members, even after the member is approved.
+// Send { lat: null, lng: null } to remove the location.
+router.patch('/:memberNo/location', requirePermission('membership.edit'), wrap(async (req, res) => {
+  const member = await getMember(req.params.memberNo);
+  if (!member || !inScope(req.user, member)) return res.status(404).json({ message: 'Member not found' });
+
+  const { lat, lng } = req.body || {};
+  const clearing = (lat === null || lat === undefined) && (lng === null || lng === undefined);
+  if (!clearing) {
+    const problem = checkLocation(lat, lng);
+    if (problem) return res.status(422).json({ message: problem });
+  }
+
+  await pool.query(
+    'UPDATE memberdetail SET Latitude = ?, Longitude = ?, ModifiedDate = NOW() WHERE MemberNo = ?',
+    clearing ? [null, null, member.MemberNo] : [Number(lat).toFixed(6), Number(lng).toFixed(6), member.MemberNo]
+  );
+  const [[row]] = await pool.query(`${LOCATION_SELECT} WHERE m.MemberNo = ?`, [member.MemberNo]);
+  res.json({ member: locationRow(req.user, row) });
 }));
 
 // Number of members waiting for approval (for the badge in the sidebar). Must come before "/:memberNo".

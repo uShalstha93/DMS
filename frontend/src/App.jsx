@@ -17,6 +17,7 @@ import ComingSoon from './pages/ComingSoon';
 import MemberDetail from './pages/membership/MemberDetail';
 import MemberForm from './pages/membership/MemberForm';
 import ViewMemberDetail from './pages/membership/ViewMemberDetail';
+import Locations from './pages/Locations';
 
 function RequireAuth({ children }) {
   const token = useSelector((s) => s.auth.token);
@@ -69,7 +70,7 @@ export default function App() {
         <Route path="loan/analysis5c" element={<ComingSoon title="5C Analysis" description="Details of sanctioned loans." />} />
         <Route path="loan/mortgage-deed" element={<ComingSoon title="Loan Mortgage Deed" description="Details of sanctioned loans." />} />
 
-        <Route path="location" element={<ComingSoon title="Locations" description="Manage locations and their details." />} />
+        <Route path="location" element={<Guard perm="membership.view"><Locations /></Guard>} />
 
         <Route path="staff" element={<Guard perm="staff.view"><StaffList /></Guard>} />
         <Route path="staff/new" element={<Guard perm="staff.manage"><StaffForm /></Guard>} />

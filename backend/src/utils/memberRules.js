@@ -62,3 +62,30 @@ export function canEditMember(user, member) {
   return user.permissions.includes('membership.edit') &&
     (member.ApprovedStatus !== 1 || user.permissions.includes('membership.approve'));
 }
+
+// ---- Location (latitude / longitude are stored as text in memberdetail)
+export function coordOf(value) {
+  if (value === null || value === undefined || String(value).trim() === '') return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+// A saved location as numbers, or nulls. (0, 0) is what the old form saved when nothing was chosen, so it counts as "not set".
+export function locationOf(row) {
+  const lat = coordOf(row.Latitude);
+  const lng = coordOf(row.Longitude);
+  if (lat === null || lng === null || (lat === 0 && lng === 0)) return { lat: null, lng: null };
+  return { lat, lng };
+}
+
+// Members live in Nepal: reject points far outside it (usually a swapped or mistyped number).
+// Returns a message, or null when the point is fine.
+export function checkLocation(lat, lng) {
+  const la = coordOf(lat);
+  const ln = coordOf(lng);
+  if (la === null || ln === null) return 'Enter both latitude and longitude as numbers';
+  if (la < 26 || la > 31 || ln < 79.5 || ln > 88.5) {
+    return 'This point is outside Nepal. Check that latitude and longitude are not swapped';
+  }
+  return null;
+}
