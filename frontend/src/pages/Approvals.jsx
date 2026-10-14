@@ -6,8 +6,72 @@ import PageHeader from '../components/PageHeader';
 import DocumentList from './DocumentList';
 import { errorMessage } from '../api/axios';
 import { membersApi } from '../api/members';
+import { loansApi } from '../api/loans';
 import { selectCan } from '../store/authSlice';
 import { date } from '../utils/format';
+
+// Loans waiting for approval
+function PendingLoans() {
+  const allBranches = useSelector(selectCan('branch.access_all'));
+  const pendingCount = useSelector((s) => s.loans?.pending || 0);
+  const [loans, setLoans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loansApi.list({ status: 'PENDING' })
+      .then((list) => { setLoans(list); setError(''); })
+      .catch((e) => setError(errorMessage(e, 'Unable to load loans')))
+      .finally(() => setLoading(false));
+  }, [pendingCount]);
+
+  if (loading) return <p className="text-sm text-slate-500">Loading loans…</p>;
+
+  const head = 'px-4 py-3 font-medium';
+  return (
+    <>
+      {error && <p role="alert" className="mb-4 rounded-md bg-stamp-tint px-3 py-2 text-sm text-stamp">{error}</p>}
+      {loans.length === 0 ? (
+        <div className="panel px-6 py-12 text-center text-sm text-slate-500">No loans are waiting for approval.</div>
+      ) : (
+        <div className="panel overflow-x-auto">
+          <table className="w-full min-w-[760px] text-left text-sm">
+            <thead className="border-b border-rule bg-paper text-slate-600">
+              <tr>
+                <th className={head}>ऋण नं.</th>
+                <th className={head}>सदस्य नं.</th>
+                <th className={head}>सदस्यको नाम</th>
+                <th className={head}>ऋण प्रकार</th>
+                <th className={head}>रकम</th>
+                {allBranches && <th className={head}>शाखा</th>}
+                <th className={head}>मिति</th>
+                <th className={`${head} text-right`}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loans.map((l) => (
+                <tr key={l.LoanNo} className="border-b border-rule last:border-0 hover:bg-paper/60">
+                  <td className="px-4 py-3 font-medium tabular-nums">{l.LoanNo}</td>
+                  <td className="px-4 py-3 tabular-nums">{l.MemberNo}</td>
+                  <td className="px-4 py-3">{l.MemberName || '—'}</td>
+                  <td className="px-4 py-3">{l.LoanType || '—'}</td>
+                  <td className="px-4 py-3 tabular-nums">{l.LoanAmount ? `रू ${l.LoanAmount}` : '—'}</td>
+                  {allBranches && <td className="px-4 py-3">{l.branch_name || l.BranchID}</td>}
+                  <td className="px-4 py-3">{l.EntryDate || '—'}</td>
+                  <td className="px-4 py-3 text-right">
+                    <Link to={`/loan/detail/${l.LoanNo}`} className="inline-flex items-center gap-1.5 font-medium text-ledger hover:underline">
+                      <Eye size={15} />Review
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  );
+}
 
 // Members waiting for approval
 function PendingMembers() {
@@ -73,21 +137,30 @@ function PendingMembers() {
 export default function Approvals() {
   const canDocs = useSelector(selectCan('document.approve'));
   const canMembers = useSelector(selectCan('membership.approve'));
+  const canLoans = useSelector(selectCan('loan.approve'));
   const docPending = useSelector((s) => s.documents.stats.PENDING);
   const memberPending = useSelector((s) => s.members.pending);
+  const loanPending = useSelector((s) => s.loans?.pending || 0);
   const [params, setParams] = useSearchParams();
 
-  const wantsMembers = params.get('tab') === 'members';
-  const tab = wantsMembers ? (canMembers ? 'members' : 'documents') : (canDocs ? 'documents' : 'members');
+  const reqTab = params.get('tab');
+  const allowedTabs = [
+    canDocs && 'documents',
+    canMembers && 'members',
+    canLoans && 'loans',
+  ].filter(Boolean);
+
+  const tab = allowedTabs.includes(reqTab) ? reqTab : (allowedTabs[0] || 'documents');
 
   const tabs = [
     canDocs && { key: 'documents', label: 'Documents', count: docPending },
     canMembers && { key: 'members', label: 'Members', count: memberPending },
+    canLoans && { key: 'loans', label: 'Loans', count: loanPending },
   ].filter(Boolean);
 
   return (
     <>
-      <PageHeader title="Approvals" subtitle="Documents and members waiting for your review." />
+      <PageHeader title="Approvals" subtitle="Documents, members, and loans waiting for your review." />
 
       {tabs.length > 1 && (
         <div className="mb-5 flex gap-1 border-b border-rule" role="tablist">
@@ -108,7 +181,9 @@ export default function Approvals() {
         </div>
       )}
 
-      {tab === 'documents' ? <DocumentList pendingOnly embedded /> : <PendingMembers />}
+      {tab === 'documents' && <DocumentList pendingOnly embedded />}
+      {tab === 'members' && <PendingMembers />}
+      {tab === 'loans' && <PendingLoans />}
     </>
   );
 }

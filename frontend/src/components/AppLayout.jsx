@@ -8,6 +8,7 @@ import { fetchNotifications } from '../store/notificationsSlice';
 import { fetchStats } from '../store/documentsSlice';
 import { fetchChatUsers } from '../store/chatSlice';
 import { fetchMemberStats } from '../store/membersSlice';
+import { fetchLoanStats } from '../store/loansSlice';
 import { connectSocket, disconnectSocket } from '../socket';
 
 export default function AppLayout() {
@@ -15,6 +16,7 @@ export default function AppLayout() {
   const token = useSelector((s) => s.auth.token);
   const canChat = useSelector((s) => s.auth.user?.permissions?.includes('chat.use'));
   const canApproveMembers = useSelector((s) => s.auth.user?.permissions?.includes('membership.approve'));
+  const canApproveLoans = useSelector((s) => s.auth.user?.permissions?.includes('loan.approve'));
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -27,6 +29,7 @@ export default function AppLayout() {
 
   useEffect(() => { if (canChat) dispatch(fetchChatUsers()); }, [canChat, dispatch]);
   useEffect(() => { if (canApproveMembers) dispatch(fetchMemberStats()); }, [canApproveMembers, dispatch]);
+  useEffect(() => { if (canApproveLoans) dispatch(fetchLoanStats()); }, [canApproveLoans, dispatch]);
 
   return (
     <div className="min-h-screen">

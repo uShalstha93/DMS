@@ -4,5 +4,6 @@ import documents from './documentsSlice';
 import notifications from './notificationsSlice';
 import chat from './chatSlice';
 import members from './membersSlice';
+import loans from './loansSlice';
 
-export const store = configureStore({ reducer: { auth, documents, notifications, chat, members } });
+export const store = configureStore({ reducer: { auth, documents, notifications, chat, members, loans } });
