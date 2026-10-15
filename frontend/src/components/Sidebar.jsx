@@ -28,7 +28,7 @@ const GROUPS = [
         base: '/loan',
         children: [
           { to: '/loan/detail', label: 'Loan Detail', perm: 'loan.view' },
-          { to: '/loan/request', label: 'Loan Request' },
+          { to: '/loan/request', label: 'Loan Request', perm: 'loanrequest.view' },
           { to: '/loan/application', label: 'Loan Application' },
           { to: '/loan/rules', label: 'Loan Rules' },
           { to: '/loan/pratigya', label: 'Loan Pratigya' },

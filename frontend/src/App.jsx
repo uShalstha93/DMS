@@ -21,6 +21,10 @@ import Locations from './pages/Locations';
 import LoanList from './pages/loan/LoanList';
 import LoanForm from './pages/loan/LoanForm';
 import ViewLoanDetail from './pages/loan/ViewLoanDetail';
+import LoanRequestList from './pages/loan/LoanRequestList';
+import LoanRequestForm from './pages/loan/LoanRequestForm';
+import ViewLoanRequest from './pages/loan/ViewLoanRequest';
+import LoanRequestPrint from './pages/loan/LoanRequestPrint';
 
 function RequireAuth({ children }) {
   const token = useSelector((s) => s.auth.token);
@@ -57,11 +61,17 @@ export default function App() {
         <Route path="membership/:memberNo" element={<Guard perm="membership.view"><ViewMemberDetail /></Guard>} />
 
         <Route path="loan" element={<Navigate to="/loan/request" replace />} />
+        <Route path="loan/request" element={<Guard perm="loanrequest.view"><LoanRequestList /></Guard>} />
+        <Route path="loan/request/new" element={<Guard perm="loanrequest.create"><LoanRequestForm /></Guard>} />
+        <Route path="loan/request/:id/edit" element={<Guard perm="loanrequest.edit"><LoanRequestForm /></Guard>} />
+        <Route path="loan/request/:id" element={<Guard perm="loanrequest.view"><ViewLoanRequest /></Guard>} />
+        <Route path="loan/request/:id/print" element={<Guard perm="loanrequest.view"><LoanRequestPrint /></Guard>} />
+
         <Route path="loan/detail" element={<Guard perm="loan.view"><LoanList /></Guard>} />
         <Route path="loan/detail/new" element={<Guard perm="loan.create"><LoanForm /></Guard>} />
         <Route path="loan/detail/edit/:loanNo" element={<Guard perm="loan.edit"><LoanForm /></Guard>} />
         <Route path="loan/detail/:loanNo" element={<Guard perm="loan.view"><ViewLoanDetail /></Guard>} />
-        <Route path="loan/request" element={<ComingSoon title="Loan Request" description="Requests raised by members." />} />
+        
         <Route path="loan/application" element={<ComingSoon title="Loan Application" description="Applications under processing." />} />
         <Route path="loan/rules" element={<ComingSoon title="Loan Rules" description="Details of loans rules." />} />
         <Route path="loan/pratigya" element={<ComingSoon title="Loan Pratigya" description="Details of sanctioned loans." />} />

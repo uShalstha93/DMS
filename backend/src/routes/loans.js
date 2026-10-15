@@ -79,6 +79,10 @@ router.get('/', requirePermission('loan.view'), wrap(async (req, res) => {
     where.push('l.BranchID = ?');
     params.push(req.user.branch.code);
   }
+  if (req.query.member) {
+    where.push('l.MemberNo = ?');
+    params.push(req.query.member);
+  }
   if (req.query.status === 'PENDING') {
     where.push('(l.ApprovedStatus = 0 OR l.ApprovedStatus IS NULL)');
   }
