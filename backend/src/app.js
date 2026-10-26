@@ -11,6 +11,7 @@ import memberRoutes from './routes/members.js';
 import addressRoutes from './routes/address.js';
 import loanRoutes from './routes/loans.js';
 import loanRequestRoutes from './routes/loanRequests.js';
+import loanApplicationRoutes from './routes/loanApplications.js';
 import organizationRoutes from './routes/organization.js';
 import { UPLOAD_ROOT } from './utils/uploads.js';
 
@@ -31,6 +32,7 @@ app.use('/api/members', memberRoutes);
 app.use('/api/address', addressRoutes);
 app.use('/api/loans', loanRoutes);
 app.use('/api/loan-requests', loanRequestRoutes);
+app.use('/api/loan-applications', loanApplicationRoutes);
 app.use('/api/organization', organizationRoutes);
 
 app.use((_req, res) => res.status(404).json({ message: 'Not found' }));

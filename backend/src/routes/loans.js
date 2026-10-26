@@ -97,23 +97,48 @@ router.get('/', requirePermission('loan.view'), wrap(async (req, res) => {
 
 // ── GET /stats  –  counts (must be declared before /:loanNo) ─────────────────
 
-router.get('/stats', requirePermission('loan.approve'), wrap(async (req, res) => {
-  const where  = [];
-  const params = [];
+router.get('/stats', wrap(async (req, res) => {
+  const branchFilter = !canAccessAllBranches(req.user) ? req.user.branch.code : null;
 
-  if (!canAccessAllBranches(req.user)) {
-    where.push('l.BranchID = ?');
-    params.push(req.user.branch.code);
-  }
-
-  const [[row]] = await pool.query(
+  // 1. loandetail pending
+  const lWhere = branchFilter ? 'WHERE BranchID = ?' : '';
+  const [[lRow]] = await pool.query(
     `SELECT COUNT(*) AS total,
-            COALESCE(SUM(COALESCE(l.ApprovedStatus, 0) = 0), 0) AS pending
-       FROM loandetail l
-       ${where.length ? 'WHERE ' + where.join(' AND ') : ''}`,
-    params
+            COALESCE(SUM(COALESCE(ApprovedStatus, 0) = 0), 0) AS pending
+       FROM loandetail ${lWhere}`,
+    branchFilter ? [branchFilter] : []
   );
-  res.json({ total: Number(row.total), pending: Number(row.pending) });
+
+  // 2. loanrequests pending
+  const rWhere = branchFilter ? 'WHERE BranchID = ?' : '';
+  const [[rRow]] = await pool.query(
+    `SELECT COUNT(*) AS total,
+            COALESCE(SUM(COALESCE(ApprovedStatus, 0) = 0), 0) AS pending
+       FROM loanrequests ${rWhere}`,
+    branchFilter ? [branchFilter] : []
+  );
+
+  // 3. loanapplications pending
+  const aWhere = branchFilter ? 'WHERE BranchID = ?' : '';
+  const [[aRow]] = await pool.query(
+    `SELECT COUNT(*) AS total,
+            COALESCE(SUM(COALESCE(ApprovedStatus, 0) = 0), 0) AS pending
+       FROM loanapplications ${aWhere}`,
+    branchFilter ? [branchFilter] : []
+  );
+
+  const pendingDetail = Number(lRow?.pending || 0);
+  const pendingRequest = Number(rRow?.pending || 0);
+  const pendingApplication = Number(aRow?.pending || 0);
+  const totalPending = pendingDetail + pendingRequest + pendingApplication;
+
+  res.json({
+    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0),
+    pending: totalPending,
+    pendingDetail,
+    pendingRequest,
+    pendingApplication,
+  });
 }));
 
 // ── GET /:loanNo  –  full detail ──────────────────────────────────────────────

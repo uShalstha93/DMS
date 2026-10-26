@@ -137,7 +137,7 @@ export default function LoanRequestList() {
                           </Link>
                           {r.ApprovedStatus === 1 ? (
                             <Link
-                              to={`/loan/request/${r.id}/print`}
+                              to={`/loan/request/print/${r.id}`}
                               className="inline-flex items-center gap-1 font-medium text-ink hover:text-ledger hover:underline"
                               title="प्रिन्ट गर्नुहोस्"
                             >

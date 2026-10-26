@@ -85,12 +85,12 @@ export default function ViewLoanRequest() {
           <ArrowLeft size={16} />फर्कनुहोस्
         </Link>
         {r.can_edit && (
-          <Link to={`/loan/request/${id}/edit`} className="btn-secondary">
+          <Link to={`/loan/request/edit/${id}`} className="btn-secondary">
             <Edit size={16} />सम्पादन गर्नुहोस्
           </Link>
         )}
         {isApproved && (
-          <Link to={`/loan/request/${id}/print`} className="btn-primary">
+          <Link to={`/loan/request/print/${id}`} className="btn-primary">
             <Printer size={16} />A4 प्रिन्ट गर्नुहोस्
           </Link>
         )}
@@ -99,9 +99,8 @@ export default function ViewLoanRequest() {
       {message.text && (
         <p
           role="alert"
-          className={`mb-4 rounded-md px-3 py-2 text-sm ${
-            message.type === 'ok' ? 'bg-ledger-tint text-ledger-dark' : 'bg-stamp-tint text-stamp'
-          }`}
+          className={`mb-4 rounded-md px-3 py-2 text-sm ${message.type === 'ok' ? 'bg-ledger-tint text-ledger-dark' : 'bg-stamp-tint text-stamp'
+            }`}
         >
           {message.text}
         </p>
@@ -273,7 +272,7 @@ export default function ViewLoanRequest() {
             {isApproved && (
               <div className="mt-4 border-t border-rule pt-4">
                 <Link
-                  to={`/loan/request/${id}/print`}
+                  to={`/loan/request/print/${id}`}
                   className="btn-primary flex w-full items-center justify-center gap-2"
                 >
                   <Printer size={16} />A4 प्रिन्ट गर्नुहोस्
