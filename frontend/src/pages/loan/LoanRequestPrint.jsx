@@ -273,7 +273,7 @@ export default function LoanRequestPrint() {
           </div>
 
           {/* Applicant Signature Footer of Page 1 */}
-          <div className="flex items-center justify-between border-t border-black pt-2 text-xs">
+          <div className="flex items-center justify-between pt-2 text-xs">
             <div>
               <span>आवेदकको नाम: </span>
               <span className="font-bold underline">{m?.FullName || '—'}</span>

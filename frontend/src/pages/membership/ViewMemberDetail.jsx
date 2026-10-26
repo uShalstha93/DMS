@@ -107,7 +107,7 @@ export default function ViewMemberDetail() {
   return (
     <>
       <PageHeader title="सदस्यको विवरण" subtitle={`Member Information · सदस्य नं. ${memberNo}`}>
-        <button className="btn-secondary" onClick={() => navigate(-1)}><ArrowLeft size={16} />Back</button>
+        <button className="btn-secondary" onClick={() => navigate(-1)}><ArrowLeft size={16} />फर्कनुहोस्</button>
         {m?.can_edit && <Link to={`/membership/edit/${m.MemberNo}`} className="btn-secondary"><Pencil size={16} />विवरण परिवर्तन गर्नुहोस</Link>}
         {/* {m?.can_delete && !deleting && (
           <button className="btn-secondary text-stamp" onClick={() => setDeleting(true)}><Trash2 size={16} />Delete</button>

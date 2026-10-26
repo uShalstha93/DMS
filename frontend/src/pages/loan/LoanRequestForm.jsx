@@ -568,7 +568,7 @@ export default function LoanRequestForm() {
                         placeholder="रकम"
                         value={values.totalShareAmount}
                         onChange={handleChange}
-                        className="field"
+                        className="field !text-[14px] h-10"
                       />
                     </div>
                     <div>
@@ -579,7 +579,7 @@ export default function LoanRequestForm() {
                         placeholder="रकम"
                         value={values.totalMonthlySaving}
                         onChange={handleChange}
-                        className="field"
+                        className="field !text-[14px] h-10"
                       />
                     </div>
                     <div>
@@ -590,7 +590,7 @@ export default function LoanRequestForm() {
                         placeholder="दर"
                         value={values.monthlySavingRate}
                         onChange={handleChange}
-                        className="field"
+                        className="field !text-[14px] h-10"
                       />
                     </div>
                     <div>
@@ -610,7 +610,7 @@ export default function LoanRequestForm() {
                         placeholder="अवस्था"
                         value={values.regularSaving}
                         onChange={handleChange}
-                        className="field"
+                        className="field !text-[14px] h-10"
                       />
                     </div>
                   </div>
@@ -648,7 +648,7 @@ export default function LoanRequestForm() {
                         placeholder="ब्याज"
                         value={values.remainingInterest}
                         onChange={handleChange}
-                        className="field"
+                        className="field !text-[14px] h-10"
                       />
                     </div>
                   </div>
@@ -700,7 +700,7 @@ export default function LoanRequestForm() {
                         placeholder="अन्य अवस्था"
                         value={values.otherCondition}
                         onChange={handleChange}
-                        className="field"
+                        className="field !text-[14px] h-10"
                       />
                     </div>
                   </div>
@@ -718,7 +718,7 @@ export default function LoanRequestForm() {
                         placeholder="सिफारिश रकम"
                         value={values.sifarish8LoanAmount}
                         onChange={handleChange}
-                        className="field font-bold"
+                        className="field font-bold !text-[14px] h-10"
                       />
                       {values.sifarish8LoanAmount && (
                         <p className="mt-1 text-xs text-ledger-dark">
@@ -754,7 +754,7 @@ export default function LoanRequestForm() {
                         placeholder="रकम"
                         value={values.sifarish9LoanAmount}
                         onChange={handleChange}
-                        className="field font-bold"
+                        className="field font-bold !text-[14px] h-10"
                       />
                       {values.sifarish9LoanAmount && (
                         <p className="mt-1 text-xs text-ledger-dark">
@@ -799,7 +799,7 @@ export default function LoanRequestForm() {
                         placeholder="औं बैठक"
                         value={values.upasamitiMeetingNo}
                         onChange={handleChange}
-                        className="field"
+                        className="field !text-[14px] h-10"
                       />
                     </div>
                     <div>
@@ -810,7 +810,7 @@ export default function LoanRequestForm() {
                         placeholder="रकम"
                         value={values.upasamitiApprovedLoanAmount}
                         onChange={handleChange}
-                        className="field font-bold"
+                        className="field font-bold !text-[14px] h-10"
                       />
                     </div>
                     <div>
@@ -841,7 +841,7 @@ export default function LoanRequestForm() {
                         placeholder="औं बैठक"
                         value={values.sanchalakMeetingNo}
                         onChange={handleChange}
-                        className="field"
+                        className="field !text-[14px] h-10"
                       />
                     </div>
                     <div>
@@ -852,7 +852,7 @@ export default function LoanRequestForm() {
                         placeholder="रकम"
                         value={values.sanchalakApprovedLoanAmount}
                         onChange={handleChange}
-                        className="field font-bold"
+                        className="field font-bold !text-[14px] h-10"
                       />
                     </div>
                     <div>

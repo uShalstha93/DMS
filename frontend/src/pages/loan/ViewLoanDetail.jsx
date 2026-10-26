@@ -78,7 +78,7 @@ export default function ViewLoanDetail() {
     <>
       <PageHeader title="ऋण विवरण" subtitle={`Loan Information · ऋण नं. ${loanNo}`}>
         <button className="btn-secondary" onClick={() => navigate(-1)}>
-          <ArrowLeft size={16} />Back
+          <ArrowLeft size={16} />फर्कनुहोस्
         </button>
         {l?.can_edit && (
           <Link to={`/loan/detail/edit/${l.LoanNo}`} className="btn-secondary">
