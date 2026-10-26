@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const UPLOAD_ROOT = path.join(__dirname, '../../uploads');
-const FOLDERS = { photo: 'membership/photo', signature: 'membership/signature' };
+const FOLDERS = { photo: 'membership/photo', signature: 'membership/signature', logo: 'organization/logo' };
 
 for (const folder of Object.values(FOLDERS)) await fs.mkdir(path.join(UPLOAD_ROOT, folder), { recursive: true });
 

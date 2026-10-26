@@ -11,6 +11,7 @@ import memberRoutes from './routes/members.js';
 import addressRoutes from './routes/address.js';
 import loanRoutes from './routes/loans.js';
 import loanRequestRoutes from './routes/loanRequests.js';
+import organizationRoutes from './routes/organization.js';
 import { UPLOAD_ROOT } from './utils/uploads.js';
 
 const app = express();
@@ -30,6 +31,7 @@ app.use('/api/members', memberRoutes);
 app.use('/api/address', addressRoutes);
 app.use('/api/loans', loanRoutes);
 app.use('/api/loan-requests', loanRequestRoutes);
+app.use('/api/organization', organizationRoutes);
 
 app.use((_req, res) => res.status(404).json({ message: 'Not found' }));
 app.use((err, _req, res, _next) => {

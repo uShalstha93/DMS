@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   LayoutDashboard, FileText, FilePlus2, BadgeCheck, Landmark, ChevronDown,
-  ClipboardCheck, MessageSquare, Users, MapPinned, Building2, Briefcase
+  ClipboardCheck, MessageSquare, Users, MapPinned, Building2, Briefcase, Settings
 } from 'lucide-react';
 import Logo from './Logo';
 
@@ -61,6 +61,7 @@ const GROUPS = [
       { to: '/staff', label: 'Staff', icon: Briefcase, perm: 'staff.view' },
       { to: '/users', label: 'Users and roles', icon: Users, perm: 'user.manage' },
       { to: '/branches', label: 'Branches', icon: Building2, perm: 'branch.manage' },
+      { to: '/organization', label: 'Organization Details', icon: Settings, perm: 'user.manage' },
     ],
   },
 ];
@@ -127,8 +128,8 @@ export default function Sidebar({ open, onClose }) {
   const loanPending = useSelector((s) => s.loans?.pending || 0);
   // Approvals badge: pending documents + pending members + pending loans (only the kinds this person can approve)
   const pending = (permissions.includes('document.approve') ? docPending : 0) +
-                  (permissions.includes('membership.approve') ? memberPending : 0) +
-                  (permissions.includes('loan.approve') ? loanPending : 0);
+    (permissions.includes('membership.approve') ? memberPending : 0) +
+    (permissions.includes('loan.approve') ? loanPending : 0);
   const unreadChat = useSelector((s) => s.chat.users.reduce((n, u) => n + u.unread, 0));
   const counts = { pending, chat: unreadChat };
 

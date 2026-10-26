@@ -11,6 +11,7 @@ import DocumentPrint from './pages/DocumentPrint';
 import Chat from './pages/Chat';
 import Users from './pages/Users';
 import Branches from './pages/Branches';
+import OrganizationDetails from './pages/OrganizationDetails';
 import StaffList from './pages/staff/StaffList';
 import StaffForm from './pages/staff/StaffForm';
 import ComingSoon from './pages/ComingSoon';
@@ -71,7 +72,7 @@ export default function App() {
         <Route path="loan/detail/new" element={<Guard perm="loan.create"><LoanForm /></Guard>} />
         <Route path="loan/detail/edit/:loanNo" element={<Guard perm="loan.edit"><LoanForm /></Guard>} />
         <Route path="loan/detail/:loanNo" element={<Guard perm="loan.view"><ViewLoanDetail /></Guard>} />
-        
+
         <Route path="loan/application" element={<ComingSoon title="Loan Application" description="Applications under processing." />} />
         <Route path="loan/rules" element={<ComingSoon title="Loan Rules" description="Details of loans rules." />} />
         <Route path="loan/pratigya" element={<ComingSoon title="Loan Pratigya" description="Details of sanctioned loans." />} />
@@ -94,6 +95,7 @@ export default function App() {
 
         <Route path="users" element={<Guard perm="user.manage"><Users /></Guard>} />
         <Route path="branches" element={<Guard perm="branch.manage"><Branches /></Guard>} />
+        <Route path="organization" element={<Guard perm="user.manage"><OrganizationDetails /></Guard>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
