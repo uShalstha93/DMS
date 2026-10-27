@@ -30,7 +30,7 @@ const GROUPS = [
           { to: '/loan/detail', label: 'Loan Detail', perm: 'loan.view' },
           { to: '/loan/request', label: 'Loan Request', perm: 'loanrequest.view' },
           { to: '/loan/application', label: 'Loan Application', perm: 'loanapplication.view' },
-          { to: '/loan/rules', label: 'Loan Rules' },
+          { to: '/loan/rules', label: 'Loan Rules', perm: 'loanrule.view' },
           { to: '/loan/pratigya', label: 'Loan Pratigya' },
           { to: '/loan/manjurinaama', label: 'Manjuri Naama' },
           { to: '/loan/pariwarik-swikriti', label: 'Loan Pariwarik Swikriti' },
@@ -49,7 +49,7 @@ const GROUPS = [
   },
   {
     title: 'Review',
-    items: [{ to: '/approvals', label: 'Approvals', icon: ClipboardCheck, perm: ['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve'], badge: 'pending' }],
+    items: [{ to: '/approvals', label: 'Approvals', icon: ClipboardCheck, perm: ['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve', 'loanrule.approve'], badge: 'pending' }],
   },
   {
     title: 'Team',
@@ -128,7 +128,8 @@ export default function Sidebar({ open, onClose }) {
   const loanPending = useSelector((s) => s.loans?.pending || 0);
   const canApproveAnyLoan = permissions.includes('loan.approve') ||
     permissions.includes('loanrequest.approve') ||
-    permissions.includes('loanapplication.approve');
+    permissions.includes('loanapplication.approve') ||
+    permissions.includes('loanrule.approve');
   // Approvals badge: pending documents + pending members + pending loans (only the kinds this person can approve)
   const pending = (permissions.includes('document.approve') ? docPending : 0) +
     (permissions.includes('membership.approve') ? memberPending : 0) +

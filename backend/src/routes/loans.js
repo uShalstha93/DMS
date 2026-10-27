@@ -127,17 +127,28 @@ router.get('/stats', wrap(async (req, res) => {
     branchFilter ? [branchFilter] : []
   );
 
+  // 4. loanrules pending
+  const ruleWhere = branchFilter ? 'WHERE BranchID = ?' : '';
+  const [[ruleRow]] = await pool.query(
+    `SELECT COUNT(*) AS total,
+            COALESCE(SUM(COALESCE(ApprovedStatus, 0) = 0), 0) AS pending
+       FROM loanrules ${ruleWhere}`,
+    branchFilter ? [branchFilter] : []
+  );
+
   const pendingDetail = Number(lRow?.pending || 0);
   const pendingRequest = Number(rRow?.pending || 0);
   const pendingApplication = Number(aRow?.pending || 0);
-  const totalPending = pendingDetail + pendingRequest + pendingApplication;
+  const pendingRule = Number(ruleRow?.pending || 0);
+  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule;
 
   res.json({
-    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0),
+    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0),
     pending: totalPending,
     pendingDetail,
     pendingRequest,
     pendingApplication,
+    pendingRule,
   });
 }));
 

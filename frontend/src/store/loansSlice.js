@@ -12,6 +12,7 @@ const slice = createSlice({
     pendingDetail: 0,
     pendingRequest: 0,
     pendingApplication: 0,
+    pendingRule: 0,
   },
   reducers: {},
   extraReducers: (b) => {
@@ -21,6 +22,7 @@ const slice = createSlice({
       s.pendingDetail = payload?.pendingDetail ?? 0;
       s.pendingRequest = payload?.pendingRequest ?? 0;
       s.pendingApplication = payload?.pendingApplication ?? 0;
+      s.pendingRule = payload?.pendingRule ?? 0;
     });
   },
 });

@@ -9,6 +9,7 @@ import { membersApi } from '../api/members';
 import { loansApi } from '../api/loans';
 import { loanRequestsApi } from '../api/loanRequests';
 import { loanApplicationsApi } from '../api/loanApplications';
+import { loanRulesApi } from '../api/loanRules';
 import { selectCan } from '../store/authSlice';
 import { date } from '../utils/format';
 
@@ -20,11 +21,13 @@ function PendingLoans() {
   const canApproveDetail = useSelector(selectCan('loan.approve'));
   const canApproveRequest = useSelector(selectCan('loanrequest.approve'));
   const canApproveApp = useSelector(selectCan('loanapplication.approve'));
+  const canApproveRule = useSelector(selectCan('loanrule.approve'));
 
   const [subTab, setSubTab] = useState('all');
   const [loans, setLoans] = useState([]);
   const [requests, setRequests] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [rules, setRules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -34,11 +37,13 @@ function PendingLoans() {
       loansApi.list({ status: 'PENDING' }),
       loanRequestsApi.list({ status: 'PENDING' }),
       loanApplicationsApi.list({ status: 'PENDING' }),
+      loanRulesApi.list({ status: 'PENDING' }),
     ])
-      .then(([lRes, rRes, aRes]) => {
+      .then(([lRes, rRes, aRes, ruleRes]) => {
         if (lRes.status === 'fulfilled') setLoans(lRes.value || []);
         if (rRes.status === 'fulfilled') setRequests(rRes.value || []);
         if (aRes.status === 'fulfilled') setApplications(aRes.value || []);
+        if (ruleRes.status === 'fulfilled') setRules(ruleRes.value || []);
         setError('');
       })
       .catch((e) => setError(errorMessage(e, 'ऋण सम्बन्धी विवरण लोड गर्न सकिएन')))
@@ -50,10 +55,11 @@ function PendingLoans() {
   const head = 'px-4 py-3 font-medium';
 
   const filterTabs = [
-    { key: 'all', label: 'सबै (All)', count: loans.length + requests.length + applications.length },
+    { key: 'all', label: 'सबै (All)', count: loans.length + requests.length + applications.length + rules.length },
     { key: 'detail', label: 'ऋण विवरण (Detail)', count: loans.length },
     { key: 'request', label: 'ऋण माग (Request)', count: requests.length },
     { key: 'application', label: 'कर्जा प्रस्ताव (Application)', count: applications.length },
+    { key: 'rules', label: 'ऋण शर्तहरु (Rules)', count: rules.length },
   ];
 
   return (
@@ -253,6 +259,71 @@ function PendingLoans() {
           )}
         </div>
       )}
+
+      {/* 4. Loan Rules Table */}
+      {(subTab === 'all' || subTab === 'rules') && (
+        <div className="mb-6">
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <ClipboardList className="size-4 text-purple-600" /> ऋणका शर्तहरु (Loan Rules & Conditions)
+              <span className="text-xs text-slate-500 font-normal">({rules.length} बाँकी)</span>
+            </h4>
+          </div>
+          {rules.length === 0 ? (
+            <div className="panel px-6 py-6 text-center text-sm text-slate-400">
+              प्रमाणीकरण हुन बाँकी ऋणका शर्तहरु छैन।
+            </div>
+          ) : (
+            <div className="panel overflow-x-auto">
+              <table className="w-full min-w-[760px] text-left text-sm">
+                <thead className="border-b border-rule bg-paper text-slate-600">
+                  <tr>
+                    <th className={head}>ऋण नं.</th>
+                    <th className={head}>सदस्य नं. / नाम</th>
+                    <th className={head}>मिति / उपस्थित मिति</th>
+                    <th className={head}>ऋण रकम</th>
+                    <th className={head}>थप / हेरफेर ब्याज</th>
+                    <th className={head}>परामर्श व्यक्ति २</th>
+                    {allBranches && <th className={head}>शाखा</th>}
+                    <th className={`${head} text-right`}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rules.map((rule) => (
+                    <tr key={rule.id} className="border-b border-rule last:border-0 hover:bg-paper/60">
+                      <td className="px-4 py-3 font-medium tabular-nums text-slate-900">{rule.LoanNo}</td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium">{rule.MemberName || '—'}</div>
+                        <div className="text-xs text-slate-400">सदस्य नं: {rule.MemberNo}</div>
+                      </td>
+                      <td className="px-4 py-3 text-xs font-mono">
+                        <div>{rule.EntryDate || '—'}</div>
+                        <div className="text-slate-400">उपस्थित: {rule.VisitDate || '—'}</div>
+                      </td>
+                      <td className="px-4 py-3 tabular-nums font-semibold text-purple-800">
+                        {rule.LoanAmount ? `रू ${rule.LoanAmount}` : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-xs">
+                        <div>थप: {rule.AdditionalIntRate ? `${rule.AdditionalIntRate}%` : '—'}</div>
+                        <div>फेरबदल: {rule.ChangeIntRate ? `${rule.ChangeIntRate}%` : '—'}</div>
+                      </td>
+                      <td className="px-4 py-3 text-slate-700">
+                        {rule.Person2 || '—'}
+                      </td>
+                      {allBranches && <td className="px-4 py-3 text-xs text-slate-500">{rule.branch_name || rule.BranchID}</td>}
+                      <td className="px-4 py-3 text-right">
+                        <Link to={`/loan/rules/${rule.id}`} className="inline-flex items-center gap-1.5 font-medium text-ledger hover:underline">
+                          <Eye size={15} />Review
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
@@ -323,7 +394,7 @@ export default function Approvals() {
   const canMembers = useSelector(selectCan('membership.approve'));
   const canLoans = useSelector((s) => {
     const p = s.auth.user?.permissions || [];
-    return p.includes('loan.approve') || p.includes('loanrequest.approve') || p.includes('loanapplication.approve');
+    return p.includes('loan.approve') || p.includes('loanrequest.approve') || p.includes('loanapplication.approve') || p.includes('loanrule.approve');
   });
 
   const docPending = useSelector((s) => s.documents.stats.PENDING);

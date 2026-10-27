@@ -57,7 +57,7 @@ export default function LoanList() {
 
   return (
     <>
-      <PageHeader title="ऋण विवरण" subtitle="Search, register, and approve loan details.">
+      <PageHeader title="ऋण विवरण (Loan Detail)" subtitle="Search, register, and approve loan details.">
         {canCreate && (
           <Link to="/loan/detail/new" className="btn-primary">
             <Plus size={16} />नयाँ ऋण दर्ता

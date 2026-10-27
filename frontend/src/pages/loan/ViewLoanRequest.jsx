@@ -113,7 +113,8 @@ export default function ViewLoanRequest() {
             <div className="flex items-start justify-between border-b border-rule pb-4">
               <div>
                 <h3 className="font-bold text-ink">{b?.name || 'सहकारी संस्था लिमिटेड'}</h3>
-                <p className="text-xs text-slate-500">{b?.address || 'ठेगाना'}</p>
+                <p className='text-xs text-slate-500'>{b?.address || 'ठेगाना'}</p>
+                {/* <p className="text-xs text-slate-500">{ent?.district || ''} {ent?.munvdc ? `, ${ent.munvdc}` : ''} {ent?.wardno ? `-${convertToNepaliNumber(ent.wardno)}` : ''}, {ent?.tole || ''}</p> */}
                 <h2 className="mt-2 text-base font-bold text-ledger-dark underline">
                   विषय: ऋण रकम माग सम्बन्धमा।
                 </h2>
@@ -284,7 +285,7 @@ export default function ViewLoanRequest() {
             )}
 
             {/* Delete button if permitted */}
-            {r.can_delete && (
+            {/* {r.can_delete && (
               <div className="mt-4 border-t border-rule pt-4">
                 <button
                   type="button"
@@ -295,7 +296,7 @@ export default function ViewLoanRequest() {
                   <Trash2 size={13} />यो ऋण माग फारम मेटाउनुहोस्
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>

@@ -30,6 +30,10 @@ import LoanApplicationList from './pages/loan/LoanApplicationList';
 import LoanApplicationForm from './pages/loan/LoanApplicationForm';
 import ViewLoanApplication from './pages/loan/ViewLoanApplication';
 import LoanApplicationPrint from './pages/loan/LoanApplicationPrint';
+import LoanRulesList from './pages/loan/LoanRulesList';
+import LoanRulesForm from './pages/loan/LoanRulesForm';
+import ViewLoanRules from './pages/loan/ViewLoanRules';
+import LoanRulesPrint from './pages/loan/LoanRulesPrint';
 
 function RequireAuth({ children }) {
   const token = useSelector((s) => s.auth.token);
@@ -83,7 +87,12 @@ export default function App() {
         <Route path="loan/application/:id" element={<Guard perm="loanapplication.view"><ViewLoanApplication /></Guard>} />
         <Route path="loan/application/print/:id" element={<Guard perm="loanapplication.view"><LoanApplicationPrint /></Guard>} />
 
-        <Route path="loan/rules" element={<ComingSoon title="Loan Rules" description="Details of loans rules." />} />
+        <Route path="loan/rules" element={<Guard perm="loanrule.view"><LoanRulesList /></Guard>} />
+        <Route path="loan/rules/new" element={<Guard perm="loanrule.create"><LoanRulesForm /></Guard>} />
+        <Route path="loan/rules/edit/:id" element={<Guard perm="loanrule.edit"><LoanRulesForm /></Guard>} />
+        <Route path="loan/rules/:id" element={<Guard perm="loanrule.view"><ViewLoanRules /></Guard>} />
+        <Route path="loan/rules/print/:id" element={<Guard perm="loanrule.view"><LoanRulesPrint /></Guard>} />
+
         <Route path="loan/pratigya" element={<ComingSoon title="Loan Pratigya" description="Details of sanctioned loans." />} />
         <Route path="loan/manjurinaama" element={<ComingSoon title="Loan Manjuri Naama" description="Details of sanctioned loans." />} />
         <Route path="loan/pariwarik-swikriti" element={<ComingSoon title="Loan Pariwarik Swikriti" description="Details of sanctioned loans." />} />

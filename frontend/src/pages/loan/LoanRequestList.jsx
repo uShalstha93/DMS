@@ -57,7 +57,7 @@ export default function LoanRequestList() {
 
   return (
     <>
-      <PageHeader title="ऋण रकम माग फारम" subtitle="Search, register, view, and print member loan requests.">
+      <PageHeader title="ऋण रकम माग (Loan Request)" subtitle="Search, register, view, and print member loan requests.">
         {canCreate && (
           <Link to="/loan/request/new" className="btn-primary">
             <Plus size={16} />नयाँ माग फारम दर्ता

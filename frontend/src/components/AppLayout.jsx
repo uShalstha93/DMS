@@ -18,7 +18,7 @@ export default function AppLayout() {
   const canApproveMembers = useSelector((s) => s.auth.user?.permissions?.includes('membership.approve'));
   const canApproveLoans = useSelector((s) => {
     const p = s.auth.user?.permissions || [];
-    return p.includes('loan.approve') || p.includes('loanrequest.approve') || p.includes('loanapplication.approve');
+    return p.includes('loan.approve') || p.includes('loanrequest.approve') || p.includes('loanapplication.approve') || p.includes('loanrule.approve');
   });
   const [menuOpen, setMenuOpen] = useState(false);
 
