@@ -10,6 +10,7 @@ import { loansApi } from '../api/loans';
 import { loanRequestsApi } from '../api/loanRequests';
 import { loanApplicationsApi } from '../api/loanApplications';
 import { loanRulesApi } from '../api/loanRules';
+import { loanPratigyaApi } from '../api/loanPratigya';
 import { selectCan } from '../store/authSlice';
 import { date } from '../utils/format';
 
@@ -22,12 +23,14 @@ function PendingLoans() {
   const canApproveRequest = useSelector(selectCan('loanrequest.approve'));
   const canApproveApp = useSelector(selectCan('loanapplication.approve'));
   const canApproveRule = useSelector(selectCan('loanrule.approve'));
+  const canApprovePratigya = useSelector(selectCan('loanpratigya.approve'));
 
   const [subTab, setSubTab] = useState('all');
   const [loans, setLoans] = useState([]);
   const [requests, setRequests] = useState([]);
   const [applications, setApplications] = useState([]);
   const [rules, setRules] = useState([]);
+  const [pratigyas, setPratigyas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -38,12 +41,14 @@ function PendingLoans() {
       loanRequestsApi.list({ status: 'PENDING' }),
       loanApplicationsApi.list({ status: 'PENDING' }),
       loanRulesApi.list({ status: 'PENDING' }),
+      loanPratigyaApi.list({ status: 'PENDING' }),
     ])
-      .then(([lRes, rRes, aRes, ruleRes]) => {
+      .then(([lRes, rRes, aRes, ruleRes, pratigyaRes]) => {
         if (lRes.status === 'fulfilled') setLoans(lRes.value || []);
         if (rRes.status === 'fulfilled') setRequests(rRes.value || []);
         if (aRes.status === 'fulfilled') setApplications(aRes.value || []);
         if (ruleRes.status === 'fulfilled') setRules(ruleRes.value || []);
+        if (pratigyaRes.status === 'fulfilled') setPratigyas(pratigyaRes.value || []);
         setError('');
       })
       .catch((e) => setError(errorMessage(e, 'ऋण सम्बन्धी विवरण लोड गर्न सकिएन')))
@@ -55,11 +60,12 @@ function PendingLoans() {
   const head = 'px-4 py-3 font-medium';
 
   const filterTabs = [
-    { key: 'all', label: 'सबै (All)', count: loans.length + requests.length + applications.length + rules.length },
+    { key: 'all', label: 'सबै (All)', count: loans.length + requests.length + applications.length + rules.length + pratigyas.length },
     { key: 'detail', label: 'ऋण विवरण (Detail)', count: loans.length },
     { key: 'request', label: 'ऋण माग (Request)', count: requests.length },
     { key: 'application', label: 'कर्जा प्रस्ताव (Application)', count: applications.length },
     { key: 'rules', label: 'ऋण शर्तहरु (Rules)', count: rules.length },
+    { key: 'pratigya', label: 'प्रतिज्ञा पत्र (Pratigya)', count: pratigyas.length },
   ];
 
   return (
@@ -324,6 +330,72 @@ function PendingLoans() {
           )}
         </div>
       )}
+
+      {/* 5. Loan Pratigya Table */}
+      {(subTab === 'all' || subTab === 'pratigya') && (
+        <div className="mb-6">
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <ClipboardList className="size-4 text-emerald-600" /> ऋणको प्रतिज्ञा पत्र (Loan Pratigya)
+              <span className="text-xs text-slate-500 font-normal">({pratigyas.length} बाँकी)</span>
+            </h4>
+            <Link to="/loan/pratigya" className="text-xs text-ledger hover:underline">
+              सबै प्रतिज्ञा पत्र हेर्नुहोस् →
+            </Link>
+          </div>
+          {pratigyas.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-slate-200 bg-white p-6 text-center text-xs text-slate-400">
+              प्रमाणीकरण हुन बाँकी प्रतिज्ञा पत्र छैन।
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b border-slate-100 bg-slate-50 text-xs font-semibold uppercase text-slate-500">
+                  <tr>
+                    <th className={head}>ऋणी सदस्य</th>
+                    <th className={head}>ऋण नं. / प्रकार</th>
+                    <th className={head}>फारम मिति</th>
+                    <th className={head}>ब्याजदर (%)</th>
+                    <th className={head}>कर्मचारी</th>
+                    {allBranches && <th className={head}>शाखा</th>}
+                    <th className={`${head} text-right`}>कार्य</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {pratigyas.map((p) => (
+                    <tr key={p.id} className="hover:bg-slate-50">
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-slate-900">{p.MemberName || '—'}</div>
+                        <div className="text-xs text-slate-400 font-mono">सदस्य नं: {p.MemberNo}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-slate-900">{p.LoanNo}</div>
+                        <div className="text-xs text-slate-400">{p.LoanType || '—'}</div>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-600 font-mono">
+                        {p.EntryDate || '—'}
+                      </td>
+                      <td className="px-4 py-3 tabular-nums font-semibold text-emerald-800">
+                        {p.RateOfInterest ? `${p.RateOfInterest}%` : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-slate-700">
+                        <div className="text-sm font-medium">{p.StaffName || '—'}</div>
+                        <div className="text-xs text-slate-400">{p.StaffPost || ''}</div>
+                      </td>
+                      {allBranches && <td className="px-4 py-3 text-xs text-slate-500">{p.branch_name || p.BranchID}</td>}
+                      <td className="px-4 py-3 text-right">
+                        <Link to={`/loan/pratigya/${p.id}`} className="inline-flex items-center gap-1.5 font-medium text-ledger hover:underline">
+                          <Eye size={15} />Review
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
@@ -394,7 +466,7 @@ export default function Approvals() {
   const canMembers = useSelector(selectCan('membership.approve'));
   const canLoans = useSelector((s) => {
     const p = s.auth.user?.permissions || [];
-    return p.includes('loan.approve') || p.includes('loanrequest.approve') || p.includes('loanapplication.approve') || p.includes('loanrule.approve');
+    return p.includes('loan.approve') || p.includes('loanrequest.approve') || p.includes('loanapplication.approve') || p.includes('loanrule.approve') || p.includes('loanpratigya.approve');
   });
 
   const docPending = useSelector((s) => s.documents.stats.PENDING);

@@ -34,6 +34,10 @@ import LoanRulesList from './pages/loan/LoanRulesList';
 import LoanRulesForm from './pages/loan/LoanRulesForm';
 import ViewLoanRules from './pages/loan/ViewLoanRules';
 import LoanRulesPrint from './pages/loan/LoanRulesPrint';
+import LoanPratigyaList from './pages/loan/LoanPratigyaList';
+import LoanPratigyaForm from './pages/loan/LoanPratigyaForm';
+import ViewLoanPratigya from './pages/loan/ViewLoanPratigya';
+import LoanPratigyaPrint from './pages/loan/LoanPratigyaPrint';
 
 function RequireAuth({ children }) {
   const token = useSelector((s) => s.auth.token);
@@ -93,7 +97,13 @@ export default function App() {
         <Route path="loan/rules/:id" element={<Guard perm="loanrule.view"><ViewLoanRules /></Guard>} />
         <Route path="loan/rules/print/:id" element={<Guard perm="loanrule.view"><LoanRulesPrint /></Guard>} />
 
-        <Route path="loan/pratigya" element={<ComingSoon title="Loan Pratigya" description="Details of sanctioned loans." />} />
+        <Route path="loan/pratigya" element={<Guard perm="loanpratigya.view"><LoanPratigyaList /></Guard>} />
+        <Route path="loan/pratigya/new" element={<Guard perm="loanpratigya.create"><LoanPratigyaForm /></Guard>} />
+        <Route path="loan/pratigya/edit/:id" element={<Guard perm="loanpratigya.edit"><LoanPratigyaForm /></Guard>} />
+        <Route path="loan/pratigya/:id" element={<Guard perm="loanpratigya.view"><ViewLoanPratigya /></Guard>} />
+        <Route path="loan/pratigya/:id/edit" element={<Guard perm="loanpratigya.edit"><LoanPratigyaForm /></Guard>} />
+        <Route path="loan/pratigya/:id/print" element={<Guard perm="loanpratigya.view"><LoanPratigyaPrint /></Guard>} />
+        <Route path="loan/pratigya/print/:id" element={<Guard perm="loanpratigya.view"><LoanPratigyaPrint /></Guard>} />
         <Route path="loan/manjurinaama" element={<ComingSoon title="Loan Manjuri Naama" description="Details of sanctioned loans." />} />
         <Route path="loan/pariwarik-swikriti" element={<ComingSoon title="Loan Pariwarik Swikriti" description="Details of sanctioned loans." />} />
         <Route path="loan/bektigat-jamani" element={<ComingSoon title="Loan Bektigat Jamani" description="Details of sanctioned loans." />} />
