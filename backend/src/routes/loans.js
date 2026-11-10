@@ -154,16 +154,26 @@ router.get('/stats', wrap(async (req, res) => {
     branchFilter ? [branchFilter] : []
   );
 
+  // 7. loanpariwarikswikritis pending
+  const swikritiWhere = branchFilter ? 'WHERE BranchID = ?' : '';
+  const [[swikritiRow]] = await pool.query(
+    `SELECT COUNT(*) AS total,
+            COALESCE(SUM(COALESCE(ApprovedStatus, 0) = 0), 0) AS pending
+       FROM loanpariwarikswikritis ${swikritiWhere}`,
+    branchFilter ? [branchFilter] : []
+  );
+
   const pendingDetail = Number(lRow?.pending || 0);
   const pendingRequest = Number(rRow?.pending || 0);
   const pendingApplication = Number(aRow?.pending || 0);
   const pendingRule = Number(ruleRow?.pending || 0);
   const pendingPratigya = Number(pratigyaRow?.pending || 0);
   const pendingManjurinaama = Number(manjurinaamaRow?.pending || 0);
-  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule + pendingPratigya + pendingManjurinaama;
+  const pendingPariwarikSwikriti = Number(swikritiRow?.pending || 0);
+  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule + pendingPratigya + pendingManjurinaama + pendingPariwarikSwikriti;
 
   res.json({
-    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0) + Number(pratigyaRow?.total || 0) + Number(manjurinaamaRow?.total || 0),
+    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0) + Number(pratigyaRow?.total || 0) + Number(manjurinaamaRow?.total || 0) + Number(swikritiRow?.total || 0),
     pending: totalPending,
     pendingDetail,
     pendingRequest,
@@ -171,6 +181,7 @@ router.get('/stats', wrap(async (req, res) => {
     pendingRule,
     pendingPratigya,
     pendingManjurinaama,
+    pendingPariwarikSwikriti,
   });
 }));
 

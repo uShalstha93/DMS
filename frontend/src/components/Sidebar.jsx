@@ -33,7 +33,7 @@ const GROUPS = [
           { to: '/loan/rules', label: 'Loan Rules', perm: 'loanrule.view' },
           { to: '/loan/pratigya', label: 'Loan Pratigya', perm: 'loanpratigya.view' },
           { to: '/loan/manjurinaama', label: 'Manjuri Naama', perm: 'loanmanjurinaama.view' },
-          { to: '/loan/pariwarik-swikriti', label: 'Loan Pariwarik Swikriti' },
+          { to: '/loan/pariwarik-swikriti', label: 'Pariwarik Swikriti', perm: 'loanpariwarikswikriti.view' },
           { to: '/loan/bektigat-jamani', label: 'Bektigat Jamani' },
           { to: '/loan/dhito-tamasuk', label: 'Dhito Tamasuk' },
           { to: '/loan/personal-tamasuk', label: 'Personal Tamasuk' },
@@ -49,7 +49,7 @@ const GROUPS = [
   },
   {
     title: 'Review',
-    items: [{ to: '/approvals', label: 'Approvals', icon: ClipboardCheck, perm: ['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve', 'loanrule.approve', 'loanpratigya.approve', 'loanmanjurinaama.approve'], badge: 'pending' }],
+    items: [{ to: '/approvals', label: 'Approvals', icon: ClipboardCheck, perm: ['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve', 'loanrule.approve', 'loanpratigya.approve', 'loanmanjurinaama.approve', 'loanpariwarikswikriti.approve'], badge: 'pending' }],
   },
   {
     title: 'Team',
@@ -131,7 +131,8 @@ export default function Sidebar({ open, onClose }) {
     permissions.includes('loanapplication.approve') ||
     permissions.includes('loanrule.approve') ||
     permissions.includes('loanpratigya.approve') ||
-    permissions.includes('loanmanjurinaama.approve');
+    permissions.includes('loanmanjurinaama.approve') ||
+    permissions.includes('loanpariwarikswikriti.approve');
   // Approvals badge: pending documents + pending members + pending loans (only the kinds this person can approve)
   const pending = (permissions.includes('document.approve') ? docPending : 0) +
     (permissions.includes('membership.approve') ? memberPending : 0) +

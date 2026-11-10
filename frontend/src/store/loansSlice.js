@@ -15,6 +15,7 @@ const slice = createSlice({
     pendingRule: 0,
     pendingPratigya: 0,
     pendingManjurinaama: 0,
+    pendingPariwarikSwikriti: 0,
   },
   reducers: {},
   extraReducers: (b) => {
@@ -27,6 +28,7 @@ const slice = createSlice({
       s.pendingRule = payload?.pendingRule ?? 0;
       s.pendingPratigya = payload?.pendingPratigya ?? 0;
       s.pendingManjurinaama = payload?.pendingManjurinaama ?? 0;
+      s.pendingPariwarikSwikriti = payload?.pendingPariwarikSwikriti ?? 0;
     });
   },
 });
