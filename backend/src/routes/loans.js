@@ -163,6 +163,15 @@ router.get('/stats', wrap(async (req, res) => {
     branchFilter ? [branchFilter] : []
   );
 
+  // 8. loanbektigatjamanis pending
+  const jamaniWhere = branchFilter ? 'WHERE BranchID = ?' : '';
+  const [[jamaniRow]] = await pool.query(
+    `SELECT COUNT(*) AS total,
+            COALESCE(SUM(COALESCE(ApprovedStatus, 0) = 0), 0) AS pending
+       FROM loanbektigatjamanis ${jamaniWhere}`,
+    branchFilter ? [branchFilter] : []
+  );
+
   const pendingDetail = Number(lRow?.pending || 0);
   const pendingRequest = Number(rRow?.pending || 0);
   const pendingApplication = Number(aRow?.pending || 0);
@@ -170,10 +179,11 @@ router.get('/stats', wrap(async (req, res) => {
   const pendingPratigya = Number(pratigyaRow?.pending || 0);
   const pendingManjurinaama = Number(manjurinaamaRow?.pending || 0);
   const pendingPariwarikSwikriti = Number(swikritiRow?.pending || 0);
-  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule + pendingPratigya + pendingManjurinaama + pendingPariwarikSwikriti;
+  const pendingBektigatJamani = Number(jamaniRow?.pending || 0);
+  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule + pendingPratigya + pendingManjurinaama + pendingPariwarikSwikriti + pendingBektigatJamani;
 
   res.json({
-    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0) + Number(pratigyaRow?.total || 0) + Number(manjurinaamaRow?.total || 0) + Number(swikritiRow?.total || 0),
+    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0) + Number(pratigyaRow?.total || 0) + Number(manjurinaamaRow?.total || 0) + Number(swikritiRow?.total || 0) + Number(jamaniRow?.total || 0),
     pending: totalPending,
     pendingDetail,
     pendingRequest,
@@ -182,6 +192,7 @@ router.get('/stats', wrap(async (req, res) => {
     pendingPratigya,
     pendingManjurinaama,
     pendingPariwarikSwikriti,
+    pendingBektigatJamani,
   });
 }));
 

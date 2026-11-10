@@ -4,10 +4,12 @@ export const convertToNepaliWords = (nepaliNumber) => {
     // Remove commas and spaces from Nepali number
     const cleanNumber = nepaliNumber.toString().replace(/[, ]/g, '');
 
-    // Nepali digit mapping
+    // Nepali digit mapping (supports both Nepali and English digits)
     const nepaliDigits = {
         '०': 0, '१': 1, '२': 2, '३': 3, '४': 4,
-        '५': 5, '६': 6, '७': 7, '८': 8, '९': 9
+        '५': 5, '६': 6, '७': 7, '८': 8, '९': 9,
+        '0': 0, '1': 1, '2': 2, '3': 3, '4': 4,
+        '5': 5, '6': 6, '7': 7, '8': 8, '9': 9
     };
 
     // Convert Nepali string to numerical value

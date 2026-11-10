@@ -13,6 +13,7 @@ import { loanRulesApi } from '../api/loanRules';
 import { loanPratigyaApi } from '../api/loanPratigya';
 import { loanManjurinaamaApi } from '../api/loanManjurinaama';
 import { loanPariwarikSwikritiApi } from '../api/loanPariwarikSwikriti';
+import { loanBektigatJamaniApi } from '../api/loanBektigatJamani';
 import { selectCan } from '../store/authSlice';
 import { date } from '../utils/format';
 
@@ -28,6 +29,7 @@ function PendingLoans() {
   const canApprovePratigya = useSelector(selectCan('loanpratigya.approve'));
   const canApproveManjurinaama = useSelector(selectCan('loanmanjurinaama.approve'));
   const canApprovePariwarik = useSelector(selectCan('loanpariwarikswikriti.approve'));
+  const canApproveJamani = useSelector(selectCan('loanbektigatjamani.approve'));
 
   const [subTab, setSubTab] = useState('all');
   const [loans, setLoans] = useState([]);
@@ -37,6 +39,7 @@ function PendingLoans() {
   const [pratigyas, setPratigyas] = useState([]);
   const [manjurinaamas, setManjurinaamas] = useState([]);
   const [pariwarikSwikritis, setPariwarikSwikritis] = useState([]);
+  const [bektigatJamanis, setBektigatJamanis] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -50,8 +53,9 @@ function PendingLoans() {
       loanPratigyaApi.list({ status: 'PENDING' }),
       loanManjurinaamaApi.list({ status: 'PENDING' }),
       loanPariwarikSwikritiApi.list({ status: 'PENDING' }),
+      loanBektigatJamaniApi.list({ status: 'PENDING' }),
     ])
-      .then(([lRes, rRes, aRes, ruleRes, pratigyaRes, manjuriRes, pariwarikRes]) => {
+      .then(([lRes, rRes, aRes, ruleRes, pratigyaRes, manjuriRes, pariwarikRes, jamaniRes]) => {
         if (lRes.status === 'fulfilled') setLoans(lRes.value || []);
         if (rRes.status === 'fulfilled') setRequests(rRes.value || []);
         if (aRes.status === 'fulfilled') setApplications(aRes.value || []);
@@ -59,6 +63,7 @@ function PendingLoans() {
         if (pratigyaRes.status === 'fulfilled') setPratigyas(pratigyaRes.value || []);
         if (manjuriRes.status === 'fulfilled') setManjurinaamas(manjuriRes.value || []);
         if (pariwarikRes.status === 'fulfilled') setPariwarikSwikritis(pariwarikRes.value || []);
+        if (jamaniRes.status === 'fulfilled') setBektigatJamanis(jamaniRes.value || []);
         setError('');
       })
       .catch((e) => setError(errorMessage(e, 'ऋण सम्बन्धी विवरण लोड गर्न सकिएन')))
@@ -70,7 +75,7 @@ function PendingLoans() {
   const head = 'px-4 py-3 font-medium';
 
   const filterTabs = [
-    { key: 'all', label: 'सबै (All)', count: loans.length + requests.length + applications.length + rules.length + pratigyas.length + manjurinaamas.length + pariwarikSwikritis.length },
+    { key: 'all', label: 'सबै (All)', count: loans.length + requests.length + applications.length + rules.length + pratigyas.length + manjurinaamas.length + pariwarikSwikritis.length + bektigatJamanis.length },
     { key: 'detail', label: 'ऋण विवरण (Detail)', count: loans.length },
     { key: 'request', label: 'ऋण माग (Request)', count: requests.length },
     { key: 'application', label: 'कर्जा प्रस्ताव (Application)', count: applications.length },
@@ -78,6 +83,7 @@ function PendingLoans() {
     { key: 'pratigya', label: 'प्रतिज्ञा पत्र (Pratigya)', count: pratigyas.length },
     { key: 'manjurinaama', label: 'मञ्जुरीनामा (Manjuri Naama)', count: manjurinaamas.length },
     { key: 'pariwarik', label: 'पारिवारिक स्वीकृति (Pariwarik)', count: pariwarikSwikritis.length },
+    { key: 'jamani', label: 'व्यक्तिगत जमानी (Bektigat Jamani)', count: bektigatJamanis.length },
   ];
 
   return (
@@ -548,6 +554,76 @@ function PendingLoans() {
           )}
         </div>
       )}
+
+      {/* 8. Loan Bektigat Jamani Table */}
+      {(subTab === 'all' || subTab === 'jamani') && (
+        <div className="mb-6">
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <ClipboardList className="size-4 text-emerald-600" /> व्यक्तिगत जमानी तमसुक (Bektigat Jamani)
+              <span className="text-xs text-slate-500 font-normal">({bektigatJamanis.length} बाँकी)</span>
+            </h4>
+            <Link to="/loan/bektigat-jamani" className="text-xs text-ledger hover:underline">
+              सबै व्यक्तिगत जमानी तमसुक हेर्नुहोस् →
+            </Link>
+          </div>
+          {bektigatJamanis.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-slate-200 bg-white p-6 text-center text-xs text-slate-400">
+              प्रमाणीकरण हुन बाँकी व्यक्तिगत जमानी तमसुक छैन।
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b border-slate-100 bg-slate-50 text-xs font-semibold uppercase text-slate-500">
+                  <tr>
+                    <th className={head}>ऋणी सदस्य</th>
+                    <th className={head}>ऋण नं. / प्रकार</th>
+                    <th className={head}>जमानी दिने व्यक्ति</th>
+                    <th className={head}>फारम मिति</th>
+                    <th className={head}>ऋण रकम</th>
+                    <th className={head}>ऋण प्रमुख / व्यवस्थापक</th>
+                    {allBranches && <th className={head}>शाखा</th>}
+                    <th className={`${head} text-right`}>कार्य</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {bektigatJamanis.map((b) => (
+                    <tr key={b.id} className="hover:bg-slate-50">
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-slate-900">{b.BorrowerName || b.MemberName || '—'}</div>
+                        <div className="text-xs text-slate-400 font-mono">सदस्य नं: {b.MemberNo}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-slate-900">{b.LoanNo}</div>
+                        <div className="text-xs text-slate-400">{b.LoanType || '—'}</div>
+                      </td>
+                      <td className="px-4 py-3 font-medium text-slate-800">
+                        {b.JamaniName || '—'}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-600 font-mono">
+                        {b.EntryDate || '—'}
+                      </td>
+                      <td className="px-4 py-3 tabular-nums font-semibold text-slate-900">
+                        {b.LoanAmount ? `रु. ${b.LoanAmount}` : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-700">
+                        <div>तयार: {b.LoanBhibhagPramukh || '—'}</div>
+                        <div>रुजु: {b.Bhyabasthapak || '—'}</div>
+                      </td>
+                      {allBranches && <td className="px-4 py-3 text-xs text-slate-500">{b.branch_name || b.BranchID}</td>}
+                      <td className="px-4 py-3 text-right">
+                        <Link to={`/loan/bektigat-jamani/${b.id}`} className="inline-flex items-center gap-1.5 font-medium text-ledger hover:underline">
+                          <Eye size={15} />Review
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
@@ -625,7 +701,8 @@ export default function Approvals() {
       p.includes('loanrule.approve') ||
       p.includes('loanpratigya.approve') ||
       p.includes('loanmanjurinaama.approve') ||
-      p.includes('loanpariwarikswikriti.approve')
+      p.includes('loanpariwarikswikriti.approve') ||
+      p.includes('loanbektigatjamani.approve')
     );
   });
 
