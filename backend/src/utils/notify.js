@@ -2,11 +2,39 @@ import { pool } from '../db.js';
 import { emitToUser } from '../socket.js';
 
 // Saves a notification for each user and pushes it live over socket.io.
-export async function notify(userIds, { type, title, body = null, link = null }) {
-  for (const userId of new Set(userIds)) {
+export async function notify(userIds, options = {}) {
+  // Support single-object signature: notify({ userId, type, title, body, message, link })
+  if (!options || typeof options !== 'object' || Object.keys(options).length === 0) {
+    if (userIds && typeof userIds === 'object' && !Array.isArray(userIds) && !(userIds instanceof Set)) {
+      const single = userIds;
+      const targetId = single.userId || single.user_id;
+      options = {
+        type: single.type,
+        title: single.title,
+        body: single.body || single.message || null,
+        link: single.link || null,
+      };
+      userIds = targetId ? [targetId] : [];
+    }
+  }
+
+  // Normalize userIds to iterable
+  const ids = Array.isArray(userIds)
+    ? userIds
+    : userIds instanceof Set
+    ? Array.from(userIds)
+    : userIds
+    ? [userIds]
+    : [];
+
+  const { type, title, body = null, message = null, link = null } = options || {};
+  const notificationBody = body || message || null;
+
+  for (const userId of new Set(ids)) {
+    if (!userId) continue;
     const [result] = await pool.query(
       'INSERT INTO notifications (user_id, type, title, body, link) VALUES (?, ?, ?, ?, ?)',
-      [userId, type, title, body, link]
+      [userId, type, title, notificationBody, link]
     );
     const [[row]] = await pool.query('SELECT * FROM notifications WHERE id = ?', [result.insertId]);
     emitToUser(userId, 'notification:new', row);

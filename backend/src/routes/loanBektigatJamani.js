@@ -377,13 +377,12 @@ router.post('/', requirePermission('loanbektigatjamani.create'), wrap(async (req
 
   // Notify approvers
   try {
-    const approvers = await usersWithPermission('loanbektigatjamani.approve', branchId);
-    for (const a of approvers) {
-      await notify({
-        userId: a.id,
-        type: 'LOAN_BEKTIGAT_JAMANI_PENDING',
+    const approverIds = await usersWithPermission('loanbektigatjamani.approve', req.user.id, branchId);
+    if (approverIds.length > 0) {
+      await notify(approverIds, {
+        type: 'loanbektigatjamani.submitted',
         title: 'नयाँ व्यक्तिगत जमानी तमसुक स्वीकृतिका लागि प्राप्त',
-        message: `सदस्य नं. ${MemberNo} (ऋण नं. ${LoanNo}) को व्यक्तिगत जमानी तमसुक प्रमाणीकरणका लागि पेश गरिएको छ।`,
+        body: `सदस्य नं. ${MemberNo} (ऋण नं. ${LoanNo}) को व्यक्तिगत जमानी तमसुक प्रमाणीकरणका लागि पेश गरिएको छ।`,
         link: `/loan/bektigat-jamani/${result.insertId}`,
       });
     }
@@ -538,11 +537,10 @@ router.post('/:id/approve', requirePermission('loanbektigatjamani.approve'), wra
   // Notify creator if exists
   if (existing[0].CreatedBy) {
     try {
-      await notify({
-        userId: existing[0].CreatedBy,
-        type: 'LOAN_BEKTIGAT_JAMANI_APPROVED',
+      await notify([existing[0].CreatedBy], {
+        type: 'loanbektigatjamani.approved',
         title: 'व्यक्तिगत जमानी तमसुक प्रमाणित भयो',
-        message: `सदस्य नं. ${existing[0].MemberNo} को व्यक्तिगत जमानी तमसुक ${approverName} द्वारा प्रमाणित गरिएको छ।`,
+        body: `सदस्य नं. ${existing[0].MemberNo} को व्यक्तिगत जमानी तमसुक ${approverName} द्वारा प्रमाणित गरिएको छ।`,
         link: `/loan/bektigat-jamani/${req.params.id}`,
       });
     } catch (e) {

@@ -35,7 +35,7 @@ const GROUPS = [
           { to: '/loan/manjurinaama', label: 'Manjuri Naama', perm: 'loanmanjurinaama.view' },
           { to: '/loan/pariwarik-swikriti', label: 'Pariwarik Swikriti', perm: 'loanpariwarikswikriti.view' },
           { to: '/loan/bektigat-jamani', label: 'Bektigat Jamani', perm: 'loanbektigatjamani.view' },
-          { to: '/loan/dhito-tamasuk', label: 'Dhito Tamasuk' },
+          { to: '/loan/dhito-tamasuk', label: 'Dhito Tamasuk', perm: 'loandhitotamasuk.view' },
           { to: '/loan/personal-tamasuk', label: 'Personal Tamasuk' },
           { to: '/loan/purpose', label: 'Purpose Of Loan' },
           { to: '/loan/malpot-application', label: 'Malpot Application' },
@@ -49,7 +49,7 @@ const GROUPS = [
   },
   {
     title: 'Review',
-    items: [{ to: '/approvals', label: 'Approvals', icon: ClipboardCheck, perm: ['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve', 'loanrule.approve', 'loanpratigya.approve', 'loanmanjurinaama.approve', 'loanpariwarikswikriti.approve', 'loanbektigatjamani.approve'], badge: 'pending' }],
+    items: [{ to: '/approvals', label: 'Approvals', icon: ClipboardCheck, perm: ['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve', 'loanrule.approve', 'loanpratigya.approve', 'loanmanjurinaama.approve', 'loanpariwarikswikriti.approve', 'loanbektigatjamani.approve', 'loandhitotamasuk.approve'], badge: 'pending' }],
   },
   {
     title: 'Team',
@@ -133,7 +133,8 @@ export default function Sidebar({ open, onClose }) {
     permissions.includes('loanpratigya.approve') ||
     permissions.includes('loanmanjurinaama.approve') ||
     permissions.includes('loanpariwarikswikriti.approve') ||
-    permissions.includes('loanbektigatjamani.approve');
+    permissions.includes('loanbektigatjamani.approve') ||
+    permissions.includes('loandhitotamasuk.approve');
   // Approvals badge: pending documents + pending members + pending loans (only the kinds this person can approve)
   const pending = (permissions.includes('document.approve') ? docPending : 0) +
     (permissions.includes('membership.approve') ? memberPending : 0) +

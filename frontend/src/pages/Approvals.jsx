@@ -14,6 +14,7 @@ import { loanPratigyaApi } from '../api/loanPratigya';
 import { loanManjurinaamaApi } from '../api/loanManjurinaama';
 import { loanPariwarikSwikritiApi } from '../api/loanPariwarikSwikriti';
 import { loanBektigatJamaniApi } from '../api/loanBektigatJamani';
+import { loanDhitoTamasukApi } from '../api/loanDhitoTamasuk';
 import { selectCan } from '../store/authSlice';
 import { date } from '../utils/format';
 
@@ -30,6 +31,7 @@ function PendingLoans() {
   const canApproveManjurinaama = useSelector(selectCan('loanmanjurinaama.approve'));
   const canApprovePariwarik = useSelector(selectCan('loanpariwarikswikriti.approve'));
   const canApproveJamani = useSelector(selectCan('loanbektigatjamani.approve'));
+  const canApproveDhito = useSelector(selectCan('loandhitotamasuk.approve'));
 
   const [subTab, setSubTab] = useState('all');
   const [loans, setLoans] = useState([]);
@@ -40,6 +42,7 @@ function PendingLoans() {
   const [manjurinaamas, setManjurinaamas] = useState([]);
   const [pariwarikSwikritis, setPariwarikSwikritis] = useState([]);
   const [bektigatJamanis, setBektigatJamanis] = useState([]);
+  const [dhitoTamasuks, setDhitoTamasuks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -54,8 +57,9 @@ function PendingLoans() {
       loanManjurinaamaApi.list({ status: 'PENDING' }),
       loanPariwarikSwikritiApi.list({ status: 'PENDING' }),
       loanBektigatJamaniApi.list({ status: 'PENDING' }),
+      loanDhitoTamasukApi.list({ status: 'PENDING' }),
     ])
-      .then(([lRes, rRes, aRes, ruleRes, pratigyaRes, manjuriRes, pariwarikRes, jamaniRes]) => {
+      .then(([lRes, rRes, aRes, ruleRes, pratigyaRes, manjuriRes, pariwarikRes, jamaniRes, dhitoRes]) => {
         if (lRes.status === 'fulfilled') setLoans(lRes.value || []);
         if (rRes.status === 'fulfilled') setRequests(rRes.value || []);
         if (aRes.status === 'fulfilled') setApplications(aRes.value || []);
@@ -64,6 +68,7 @@ function PendingLoans() {
         if (manjuriRes.status === 'fulfilled') setManjurinaamas(manjuriRes.value || []);
         if (pariwarikRes.status === 'fulfilled') setPariwarikSwikritis(pariwarikRes.value || []);
         if (jamaniRes.status === 'fulfilled') setBektigatJamanis(jamaniRes.value || []);
+        if (dhitoRes.status === 'fulfilled') setDhitoTamasuks(dhitoRes.value || []);
         setError('');
       })
       .catch((e) => setError(errorMessage(e, 'ऋण सम्बन्धी विवरण लोड गर्न सकिएन')))
@@ -75,7 +80,7 @@ function PendingLoans() {
   const head = 'px-4 py-3 font-medium';
 
   const filterTabs = [
-    { key: 'all', label: 'सबै (All)', count: loans.length + requests.length + applications.length + rules.length + pratigyas.length + manjurinaamas.length + pariwarikSwikritis.length + bektigatJamanis.length },
+    { key: 'all', label: 'सबै (All)', count: loans.length + requests.length + applications.length + rules.length + pratigyas.length + manjurinaamas.length + pariwarikSwikritis.length + bektigatJamanis.length + dhitoTamasuks.length },
     { key: 'detail', label: 'ऋण विवरण (Detail)', count: loans.length },
     { key: 'request', label: 'ऋण माग (Request)', count: requests.length },
     { key: 'application', label: 'कर्जा प्रस्ताव (Application)', count: applications.length },
@@ -84,6 +89,7 @@ function PendingLoans() {
     { key: 'manjurinaama', label: 'मञ्जुरीनामा (Manjuri Naama)', count: manjurinaamas.length },
     { key: 'pariwarik', label: 'पारिवारिक स्वीकृति (Pariwarik)', count: pariwarikSwikritis.length },
     { key: 'jamani', label: 'व्यक्तिगत जमानी (Bektigat Jamani)', count: bektigatJamanis.length },
+    { key: 'dhito', label: 'धितो तमसुक (Dhito Tamasuk)', count: dhitoTamasuks.length },
   ];
 
   return (
@@ -624,6 +630,81 @@ function PendingLoans() {
           )}
         </div>
       )}
+
+      {/* 9. Loan Dhito Tamasuk Table */}
+      {(subTab === 'all' || subTab === 'dhito') && (
+        <div className="mb-6">
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <ClipboardList className="size-4 text-indigo-600" /> धितो तमसुक (Dhito Tamasuk)
+              <span className="text-xs text-slate-500 font-normal">({dhitoTamasuks.length} बाँकी)</span>
+            </h4>
+            <Link to="/loan/dhito-tamasuk" className="text-xs text-ledger hover:underline">
+              सबै धितो तमसुक हेर्नुहोस् →
+            </Link>
+          </div>
+          {dhitoTamasuks.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-slate-200 bg-white p-6 text-center text-xs text-slate-400">
+              प्रमाणीकरण हुन बाँकी धितो तमसुक छैन।
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+              <table className="w-full text-left text-sm text-slate-700">
+                <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                  <tr>
+                    <th className={head}>सदस्य नं. / ऋणी नाम</th>
+                    <th className={head}>ऋण नं. / प्रकार</th>
+                    <th className={head}>जग्गाधनी / कित्ता नं.</th>
+                    <th className={head}>फारम मिति</th>
+                    <th className={head}>ऋण रकम</th>
+                    <th className={head}>ऋण प्रमुख / व्यवस्थापक</th>
+                    {allBranches && <th className={head}>शाखा</th>}
+                    <th className={`${head} text-right`}>कार्य</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {dhitoTamasuks.map((d) => (
+                    <tr key={d.id} className="hover:bg-slate-50">
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-slate-900">{d.BorrowerName || d.MemberName || '—'}</div>
+                        <div className="text-xs text-slate-400">सदस्य नं: {d.MemberNo}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-slate-900">{d.LoanNo}</div>
+                        <div className="text-xs text-slate-400">{d.LoanType || d.LoanPurpose || '—'}</div>
+                      </td>
+                      <td className="px-4 py-3 font-medium text-slate-800">
+                        <div>{d.DhitoPerson || '—'}</div>
+                        {d.DhitoKittaNo && (
+                          <div className="text-xs text-slate-500">
+                            कित्ता: {d.DhitoKittaNo} {d.DhitoArea ? `(${d.DhitoArea})` : ''}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-600 font-mono">
+                        {d.EntryDate || '—'}
+                      </td>
+                      <td className="px-4 py-3 tabular-nums font-semibold text-slate-900">
+                        {d.LoanAmount ? `रु. ${d.LoanAmount}` : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-700">
+                        <div>तयार: {d.LoanBhibhagPramukh || '—'}</div>
+                        <div>रुजु: {d.Byabasthapak || '—'}</div>
+                      </td>
+                      {allBranches && <td className="px-4 py-3 text-xs text-slate-500">{d.branch_name || d.BranchID}</td>}
+                      <td className="px-4 py-3 text-right">
+                        <Link to={`/loan/dhito-tamasuk/${d.id}`} className="inline-flex items-center gap-1.5 font-medium text-ledger hover:underline">
+                          <Eye size={15} />Review
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
@@ -702,7 +783,8 @@ export default function Approvals() {
       p.includes('loanpratigya.approve') ||
       p.includes('loanmanjurinaama.approve') ||
       p.includes('loanpariwarikswikriti.approve') ||
-      p.includes('loanbektigatjamani.approve')
+      p.includes('loanbektigatjamani.approve') ||
+      p.includes('loandhitotamasuk.approve')
     );
   });
 
