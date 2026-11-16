@@ -174,7 +174,7 @@ export default function LoanPratigyaPrint() {
           </div>
 
           {/* Bottom Signatures */}
-          <div className="mt-8 pt-4 border-t border-black/40">
+          <div className="mt-8 pt-12 border-t border-black/40">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="flex flex-col">
                 <span className="mb-6">हस्ताक्षर: ________________________</span>

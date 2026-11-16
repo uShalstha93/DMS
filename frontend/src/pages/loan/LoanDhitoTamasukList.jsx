@@ -196,9 +196,7 @@ export default function LoanDhitoTamasukList() {
                         </Link>
                         {r.ApprovedStatus === 1 ? (
                           <Link
-                            to={`/loan/dhito-tamasuk/${r.id}/print`}
-                            target="_blank"
-                            rel="noreferrer"
+                            to={`/loan/dhito-tamasuk/print/${r.id}`}
                             className="inline-flex items-center gap-1 font-medium text-ink hover:text-ledger hover:underline"
                           >
                             <Printer size={13} /> Print

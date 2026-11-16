@@ -71,11 +71,10 @@ export default function LoanManjurinaamaList() {
         <div
           role="status"
           aria-live="polite"
-          className={`mb-4 flex items-center justify-between rounded-md p-3 text-sm ${
-            message.type === 'ok'
+          className={`mb-4 flex items-center justify-between rounded-md p-3 text-sm ${message.type === 'ok'
               ? 'border border-emerald-200 bg-emerald-50 text-emerald-800'
               : 'border border-red-200 bg-red-50 text-red-800'
-          }`}
+            }`}
         >
           <span>{message.text}</span>
           <button
@@ -173,7 +172,7 @@ export default function LoanManjurinaamaList() {
                         </Link>
                         {r.ApprovedStatus === 1 ? (
                           <Link
-                            to={`/loan/manjurinaama/${r.id}/print`}
+                            to={`/loan/manjurinaama/print/${r.id}`}
                             title="प्रिन्ट गर्नुहोस्"
                             className="inline-flex items-center gap-1 font-medium text-ink hover:text-ledger hover:underline"
                           >

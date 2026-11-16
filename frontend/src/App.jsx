@@ -117,9 +117,8 @@ export default function App() {
         <Route path="loan/pratigya/new" element={<Guard perm="loanpratigya.create"><LoanPratigyaForm /></Guard>} />
         <Route path="loan/pratigya/edit/:id" element={<Guard perm="loanpratigya.edit"><LoanPratigyaForm /></Guard>} />
         <Route path="loan/pratigya/:id" element={<Guard perm="loanpratigya.view"><ViewLoanPratigya /></Guard>} />
-        <Route path="loan/pratigya/:id/edit" element={<Guard perm="loanpratigya.edit"><LoanPratigyaForm /></Guard>} />
-        <Route path="loan/pratigya/:id/print" element={<Guard perm="loanpratigya.view"><LoanPratigyaPrint /></Guard>} />
         <Route path="loan/pratigya/print/:id" element={<Guard perm="loanpratigya.view"><LoanPratigyaPrint /></Guard>} />
+
         <Route path="loan/manjurinaama" element={<Guard perm="loanmanjurinaama.view"><LoanManjurinaamaList /></Guard>} />
         <Route path="loan/manjurinaama/new" element={<Guard perm="loanmanjurinaama.create"><LoanManjurinaamaForm /></Guard>} />
         <Route path="loan/manjurinaama/edit/:id" element={<Guard perm="loanmanjurinaama.edit"><LoanManjurinaamaForm /></Guard>} />
@@ -127,6 +126,7 @@ export default function App() {
         <Route path="loan/manjurinaama/:id/edit" element={<Guard perm="loanmanjurinaama.edit"><LoanManjurinaamaForm /></Guard>} />
         <Route path="loan/manjurinaama/:id/print" element={<Guard perm="loanmanjurinaama.view"><LoanManjurinaamaPrint /></Guard>} />
         <Route path="loan/manjurinaama/print/:id" element={<Guard perm="loanmanjurinaama.view"><LoanManjurinaamaPrint /></Guard>} />
+        
         <Route path="loan/pariwarik-swikriti" element={<Guard perm="loanpariwarikswikriti.view"><LoanPariwarikSwikritiList /></Guard>} />
         <Route path="loan/pariwarik-swikriti/new" element={<Guard perm="loanpariwarikswikriti.create"><LoanPariwarikSwikritiForm /></Guard>} />
         <Route path="loan/pariwarik-swikriti/edit/:id" element={<Guard perm="loanpariwarikswikriti.edit"><LoanPariwarikSwikritiForm /></Guard>} />
@@ -134,6 +134,7 @@ export default function App() {
         <Route path="loan/pariwarik-swikriti/:id/edit" element={<Guard perm="loanpariwarikswikriti.edit"><LoanPariwarikSwikritiForm /></Guard>} />
         <Route path="loan/pariwarik-swikriti/:id/print" element={<Guard perm="loanpariwarikswikriti.view"><LoanPariwarikSwikritiPrint /></Guard>} />
         <Route path="loan/pariwarik-swikriti/print/:id" element={<Guard perm="loanpariwarikswikriti.view"><LoanPariwarikSwikritiPrint /></Guard>} />
+
         <Route path="loan/bektigat-jamani" element={<Guard perm="loanbektigatjamani.view"><LoanBektigatJamaniList /></Guard>} />
         <Route path="loan/bektigat-jamani/new" element={<Guard perm="loanbektigatjamani.create"><LoanBektigatJamaniForm /></Guard>} />
         <Route path="loan/bektigat-jamani/edit/:id" element={<Guard perm="loanbektigatjamani.edit"><LoanBektigatJamaniForm /></Guard>} />
@@ -141,6 +142,7 @@ export default function App() {
         <Route path="loan/bektigat-jamani/:id/edit" element={<Guard perm="loanbektigatjamani.edit"><LoanBektigatJamaniForm /></Guard>} />
         <Route path="loan/bektigat-jamani/:id/print" element={<Guard perm="loanbektigatjamani.view"><LoanBektigatJamaniPrint /></Guard>} />
         <Route path="loan/bektigat-jamani/print/:id" element={<Guard perm="loanbektigatjamani.view"><LoanBektigatJamaniPrint /></Guard>} />
+
         <Route path="loan/dhito-tamasuk" element={<Guard perm="loandhitotamasuk.view"><LoanDhitoTamasukList /></Guard>} />
         <Route path="loan/dhito-tamasuk/new" element={<Guard perm="loandhitotamasuk.create"><LoanDhitoTamasukForm /></Guard>} />
         <Route path="loan/dhito-tamasuk/edit/:id" element={<Guard perm="loandhitotamasuk.edit"><LoanDhitoTamasukForm /></Guard>} />
@@ -148,6 +150,7 @@ export default function App() {
         <Route path="loan/dhito-tamasuk/:id/edit" element={<Guard perm="loandhitotamasuk.edit"><LoanDhitoTamasukForm /></Guard>} />
         <Route path="loan/dhito-tamasuk/:id/print" element={<Guard perm="loandhitotamasuk.view"><LoanDhitoTamasukPrint /></Guard>} />
         <Route path="loan/dhito-tamasuk/print/:id" element={<Guard perm="loandhitotamasuk.view"><LoanDhitoTamasukPrint /></Guard>} />
+        
         <Route path="loan/personal-tamasuk" element={<ComingSoon title="Loan Personal Tamasuk" description="Details of sanctioned loans." />} />
         <Route path="loan/purpose" element={<ComingSoon title="Purpose Of Loan" description="Details of sanctioned loans." />} />
         <Route path="loan/malpot-application" element={<ComingSoon title="Loan Malpot Application" description="Details of sanctioned loans." />} />

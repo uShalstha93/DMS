@@ -64,8 +64,8 @@ export default function ViewLoanDhitoTamasuk() {
     Array.isArray(t.DhitoItems) && t.DhitoItems.length > 0
       ? t.DhitoItems
       : dhitos.length > 0
-      ? dhitos
-      : [
+        ? dhitos
+        : [
           {
             DhitoPerson: t.DhitoPerson,
             DhitoDistrict: t.DhitoDistrict,
@@ -92,7 +92,7 @@ export default function ViewLoanDhitoTamasuk() {
           </Link>
         )}
         {isApproved && (
-          <Link to={`/loan/dhito-tamasuk/${id}/print`} className="btn-primary">
+          <Link to={`/loan/dhito-tamasuk/print/${id}`} className="btn-primary">
             <Printer className="size-4" /> A4 प्रिन्ट गर्नुहोस्
           </Link>
         )}
@@ -102,11 +102,10 @@ export default function ViewLoanDhitoTamasuk() {
         <div
           role="status"
           aria-live="polite"
-          className={`mb-4 flex items-center justify-between rounded-md p-3 text-sm ${
-            message.type === 'ok'
-              ? 'border border-emerald-200 bg-emerald-50 text-emerald-800'
-              : 'border border-red-200 bg-red-50 text-red-800'
-          }`}
+          className={`mb-4 flex items-center justify-between rounded-md p-3 text-sm ${message.type === 'ok'
+            ? 'border border-emerald-200 bg-emerald-50 text-emerald-800'
+            : 'border border-red-200 bg-red-50 text-red-800'
+            }`}
         >
           <span>{message.text}</span>
           <button
@@ -147,45 +146,66 @@ export default function ViewLoanDhitoTamasuk() {
           </div>
 
           {/* Title */}
-          <div className="text-center font-bold text-lg text-slate-900 border-b border-dashed pb-2 mb-6">
+          <div className="text-center font-bold text-lg text-slate-900 mb-2">
             धितो तमसुक
           </div>
 
-          {/* Deed Body with Witnesses */}
-          <div className="flex flex-col md:flex-row gap-4 border border-slate-300 rounded-lg p-4 bg-slate-50/50">
-            {/* Witnesses Column */}
-            <div className="md:w-[24%] border-b md:border-b-0 md:border-r border-slate-300 pr-3 pb-3 md:pb-0 text-xs text-slate-700 space-y-4">
-              <div className="font-semibold text-slate-900 border-b pb-1">साक्षीहरू (Witnesses):</div>
-              <div className="space-y-1">
-                <p className="font-medium text-slate-800">१. पहिलो साक्षी</p>
-                <p>
-                  नाम: <strong className="text-slate-900">{t.SakshiName1 || '—'}</strong>
-                </p>
-                <p>जिल्ला: {t.SakshiDistrict1 || '—'}</p>
-                <p>गा.वि.स/न.पा.: {t.SakshiPalika1 || '—'}</p>
-                <p>वडा नं.: {convertToNepaliNumber(t.SakshiWardNo1) || '—'}</p>
-                {t.SakshiMemberNo1 && (
-                  <p>सदस्य नं.: {convertToNepaliNumber(t.SakshiMemberNo1)}</p>
-                )}
-                <div className="pt-2 text-slate-400">दस्तखत: ........................</div>
+          {/* Top Office Sanction & Endorsement Memo Block (कार्यालय लगानी टिप्पणी खण्ड) */}
+          <div className="border border-slate-300 rounded-lg p-4 mb-6 bg-white text-slate-800 shadow-sm">
+            <div className="flex flex-col md:flex-row gap-5 items-start">
+              {/* Left Thumbprints Box */}
+              <div className="flex flex-col items-center justify-center p-2 border-b md:border-b-0 md:border-r border-slate-300 pr-5 shrink-0 self-stretch md:self-auto">
+                <div className="flex items-end">
+                  <div className="flex items-end justify-center w-20 h-20 border border-slate-400 bg-slate-50 p-1">
+                    <p className="text-xs text-slate-500 font-medium">दायाँ</p>
+                  </div>
+                  <div className="h-8 border-l border-slate-400 mx-1"></div>
+                  <div className="flex items-end justify-center w-20 h-20 border border-slate-400 bg-slate-50 p-1">
+                    <p className="text-xs text-slate-500 font-medium">बायाँ</p>
+                  </div>
+                </div>
+                <p className="text-[11px] font-medium text-slate-600 mt-2">सहिछाप / ल्याप्चे</p>
               </div>
-              <div className="space-y-1 pt-3 border-t border-slate-200">
-                <p className="font-medium text-slate-800">२. दोस्रो साक्षी</p>
-                <p>
-                  नाम: <strong className="text-slate-900">{t.SakshiName2 || '—'}</strong>
-                </p>
-                <p>जिल्ला: {t.SakshiDistrict2 || '—'}</p>
-                <p>गा.वि.स/न.पा.: {t.SakshiPalika2 || '—'}</p>
-                <p>वडा नं.: {convertToNepaliNumber(t.SakshiWardNo2) || '—'}</p>
-                {t.SakshiMemberNo2 && (
-                  <p>सदस्य नं.: {convertToNepaliNumber(t.SakshiMemberNo2)}</p>
-                )}
-                <div className="pt-2 text-slate-400">दस्तखत: ........................</div>
+
+              {/* Right: Reg & Date + Memo Statement + Staff Signs */}
+              <div className="flex-1 w-full flex flex-col justify-between space-y-3">
+                <div className="text-xs text-slate-800 leading-relaxed text-justify">
+                  <p>
+                    श्री <strong>{ent?.CompanyName || ent?.companyname || 'सहकारी संस्था लि.'}</strong> को
+                    मुख्य कार्यलय संस्थाका शेयर सदस्य श्री{' '}
+                    <strong>{t.BorrowerName || mem?.FullName || '—'}</strong> ले संस्थाका ऋण
+                    व्यवस्थापन कार्यबिधि तथा तत्सम्बन्धी कानुनी प्रकृया समेत पढीबाची सुनाउदा चित्त
+                    बुझाई सहिछाप गरी ऋण लिएकोले आजकै मितिमा ने. रू.{' '}
+                    <strong>{convertToNepaliNumber(t.LoanAmount) || '—'}</strong> (अक्षरेपी रु.{' '}
+                    <strong>{loanWords || '—'}</strong>) मात्र लगानी गरियो |
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap justify-between gap-4 pt-2.5 border-t border-slate-200 text-xs">
+                  <div className="space-y-1">
+                    <p className="font-bold text-slate-900 mb-3">तमसुक तयार गर्ने :</p>
+                    <p className="text-slate-400">दस्तखत: ....................</p>
+                    <p>
+                      नाम : <strong>{t.LoanBhibhagPramukh || '—'}</strong>
+                    </p>
+                    <p className="text-slate-500 text-[11px]">पद : ऋण बिभाग प्रमुख</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-bold text-slate-900 mb-3">तमसुक प्रमाणित गर्ने :</p>
+                    <p className="text-slate-400">दस्तखत: ....................</p>
+                    <p>
+                      नाम : <strong>{t.Byabasthapak || '—'}</strong>
+                    </p>
+                    <p className="text-slate-500 text-[11px]">पद : व्यवस्थापक</p>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* Main Deed Text */}
-            <div className="md:w-[76%] pl-1 text-sm text-slate-800 leading-relaxed text-justify space-y-4">
+          {/* Deed Body */}
+          <div className="border border-slate-300 rounded-lg p-4 bg-slate-50/50">
+            <div className="w-full pl-1 text-sm text-slate-800 leading-relaxed text-justify space-y-4">
               <p className="indent-8">
                 लिखितम धनीका नाम सहकारी ऐन <strong>{t.SahakariAin || '२०४८'}</strong> बमोजिम
                 जिल्ला सहकारी कार्यालय, <strong>{t.JillaSahakariAddress || 'काठमाडौं'}</strong>{' '}
@@ -303,6 +323,39 @@ export default function ViewLoanDhitoTamasuk() {
                   <div className="border-b border-slate-400 pt-4"></div>
                   <p className="font-semibold text-xs text-slate-800">ऋणीको सहीछाप</p>
                   <p className="text-xs text-slate-700">नाम: {t.BorrowerName || mem?.FullName}</p>
+                </div>
+              </div>
+
+              {/* Witnesses */}
+              <div className="pt-3 border-t border-slate-300 space-y-2 text-slate-700">
+                <div className="font-semibold text-slate-900 border-b pb-1 text-center">
+                  साक्षीहरू (Witnesses):
+                </div>
+                <div className="flex items-center justify-between gap-2 pt-3 whitespace-nowrap text-[10px]">
+                  <p className="font-medium text-slate-800">१. पहिलो साक्षी</p>
+                  <p>
+                    नाम: <strong className="text-slate-900">{t.SakshiName1 || '—'}</strong>
+                  </p>
+                  <p>जिल्ला: {t.SakshiDistrict1 || '—'}</p>
+                  <p>गा.वि.स/न.पा.: {t.SakshiPalika1 || '—'}</p>
+                  <p>वडा नं.: {convertToNepaliNumber(t.SakshiWardNo1) || '—'}</p>
+                  {t.SakshiMemberNo1 && (
+                    <p>सदस्य नं.: {convertToNepaliNumber(t.SakshiMemberNo1)}</p>
+                  )}
+                  <p className="text-slate-400">दस्तखत: ........................</p>
+                </div>
+                <div className="flex items-center justify-between gap-2 border-t border-slate-200 pt-3 whitespace-nowrap text-[10px]">
+                  <p className="font-medium text-slate-800">२. दोस्रो साक्षी</p>
+                  <p>
+                    नाम: <strong className="text-slate-900">{t.SakshiName2 || '—'}</strong>
+                  </p>
+                  <p>जिल्ला: {t.SakshiDistrict2 || '—'}</p>
+                  <p>गा.वि.स/न.पा.: {t.SakshiPalika2 || '—'}</p>
+                  <p>वडा नं.: {convertToNepaliNumber(t.SakshiWardNo2) || '—'}</p>
+                  {t.SakshiMemberNo2 && (
+                    <p>सदस्य नं.: {convertToNepaliNumber(t.SakshiMemberNo2)}</p>
+                  )}
+                  <p className="text-slate-400">दस्तखत: ........................</p>
                 </div>
               </div>
 
@@ -435,7 +488,7 @@ export default function ViewLoanDhitoTamasuk() {
                 कानूनी प्रयोजनका लागि आधिकारिक धितो तमसुकलाई A4 portrait ढाँचामा प्रिन्ट गर्नुहोस्।
               </p>
               <Link
-                to={`/loan/dhito-tamasuk/${id}/print`}
+                to={`/loan/dhito-tamasuk/print/${id}`}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center gap-1.5 w-full rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow hover:bg-indigo-700"

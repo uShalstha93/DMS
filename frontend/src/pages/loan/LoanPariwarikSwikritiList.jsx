@@ -174,7 +174,7 @@ export default function LoanPariwarikSwikritiList() {
                         </Link>
                         {r.ApprovedStatus === 1 ? (
                           <Link
-                            to={`/loan/pariwarik-swikriti/${r.id}/print`}
+                            to={`/loan/pariwarik-swikriti/print/${r.id}`}
                             title="प्रिन्ट गर्नुहोस्"
                             className="inline-flex items-center gap-1 font-medium text-ink hover:text-ledger hover:underline"
                           >

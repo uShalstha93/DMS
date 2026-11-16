@@ -56,8 +56,8 @@ export default function LoanDhitoTamasukPrint() {
     Array.isArray(t.DhitoItems) && t.DhitoItems.length > 0
       ? t.DhitoItems
       : dhitos.length > 0
-      ? dhitos
-      : [
+        ? dhitos
+        : [
           {
             DhitoPerson: t.DhitoPerson,
             DhitoDistrict: t.DhitoDistrict,
@@ -113,50 +113,67 @@ export default function LoanDhitoTamasukPrint() {
             </div>
 
             {/* Title */}
-            <div className="text-center font-bold text-sm border-b border-black pb-1 mb-3">
+            <div className="text-center font-bold text-sm pb-1 mb-2">
               धितो तमसुक
             </div>
 
-            {/* Deed Content with Left Witness Column */}
-            <div className="flex border border-black text-[11px] leading-relaxed">
-              {/* Witnesses Side Panel */}
-              <div className="w-[23%] border-r border-black p-2 space-y-3 text-black">
-                <div className="font-bold border-b border-black pb-1 text-center">साक्षीहरू</div>
-                <div className="space-y-1">
-                  <p className="font-bold">१. साक्षी</p>
-                  <p>
-                    नाम: <strong>{t.SakshiName1 || '………………'}</strong>
-                  </p>
-                  <p>जिल्ला: {t.SakshiDistrict1 || '…………'}</p>
-                  <p>गा.वि.स/न.पा: {t.SakshiPalika1 || '…………'}</p>
-                  <p>वडा नं.: {convertToNepaliNumber(t.SakshiWardNo1) || '…'}</p>
-                  {t.SakshiMemberNo1 && (
-                    <p>सदस्य नं.: {convertToNepaliNumber(t.SakshiMemberNo1)}</p>
-                  )}
-                  <div className="pt-2">
-                    <p className="text-[10px]">दस्तखत: ……………</p>
+            {/* Top Office Sanction & Endorsement Memo Block (कार्यालय लगानी टिप्पणी खण्ड) */}
+            <div className="border border-black p-2.5 mb-3 text-black">
+              <div className="flex gap-3 items-start">
+                {/* Left Thumbprints Box */}
+                <div className="flex flex-col items-center justify-center p-1 border-r border-black pr-3 shrink-0">
+                  <div className="flex items-end">
+                    <div className="flex items-end justify-center w-16 h-16 border border-black p-0.5">
+                      <p className="text-[10px] text-gray-500">दायाँ</p>
+                    </div>
+                    <div className="h-6 border-l border-black mx-1"></div>
+                    <div className="flex items-end justify-center w-16 h-16 border border-black p-0.5">
+                      <p className="text-[10px] text-gray-500">बायाँ</p>
+                    </div>
                   </div>
+                  <p className="text-[9px] font-bold mt-1">सहिछाप / ल्याप्चे</p>
                 </div>
 
-                <div className="space-y-1 pt-2 border-t border-black">
-                  <p className="font-bold">२. साक्षी</p>
-                  <p>
-                    नाम: <strong>{t.SakshiName2 || '………………'}</strong>
-                  </p>
-                  <p>जिल्ला: {t.SakshiDistrict2 || '…………'}</p>
-                  <p>गा.वि.स/न.पा: {t.SakshiPalika2 || '…………'}</p>
-                  <p>वडा नं.: {convertToNepaliNumber(t.SakshiWardNo2) || '…'}</p>
-                  {t.SakshiMemberNo2 && (
-                    <p>सदस्य नं.: {convertToNepaliNumber(t.SakshiMemberNo2)}</p>
-                  )}
-                  <div className="pt-2">
-                    <p className="text-[10px]">दस्तखत: ……………</p>
+                {/* Right: Reg & Date + Memo Statement + Staff Signs */}
+                <div className="flex-1 flex flex-col justify-between space-y-2 text-[10.5px]">
+
+                  <div className="leading-relaxed text-justify">
+                    <p>
+                      श्री <strong>{ent?.CompanyName || ent?.companyname || 'सहकारी संस्था लि.'}</strong> को
+                      मुख्य कार्यलय संस्थाका शेयर सदस्य श्री{' '}
+                      <strong>{t.BorrowerName || mem?.FullName || '………………'}</strong> ले संस्थाका ऋण
+                      व्यवस्थापन कार्यबिधि तथा तत्सम्बन्धी कानुनी प्रकृया समेत पढीबाची सुनाउदा चित्त
+                      बुझाई सहिछाप गरी ऋण लिएकोले आजकै मितिमा ने. रू.{' '}
+                      <strong>{convertToNepaliNumber(t.LoanAmount) || '………'}</strong> (अक्षरेपी रु.{' '}
+                      <strong>{loanWords || '…………………'}</strong>) मात्र लगानी गरियो |
+                    </p>
+                  </div>
+
+                  <div className="flex justify-between gap-4 pt-1.5 border-t border-black text-[10px]">
+                    <div className="space-y-1">
+                      <p className="font-bold mb-3">तमसुक तयार गर्ने :</p>
+                      <p className="text-gray-500">दस्तखत: ....................</p>
+                      <p>
+                        नाम : <strong>{t.LoanBhibhagPramukh || '………………'}</strong>
+                      </p>
+                      <p className="text-gray-600 text-[9px]">पद : ऋण बिभाग प्रमुख</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="font-bold mb-3">तमसुक प्रमाणित गर्ने :</p>
+                      <p className="text-gray-500">दस्तखत: ....................</p>
+                      <p>
+                        नाम : <strong>{t.Byabasthapak || '………………'}</strong>
+                      </p>
+                      <p className="text-gray-600 text-[9px]">पद : व्यवस्थापक</p>
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Main Deed Text */}
-              <div className="w-[77%] p-3 text-justify space-y-2 text-black">
+            {/* Deed Content */}
+            <div className="border border-black text-[12px] leading-relaxed">
+              <div className="w-full p-3 text-justify space-y-2 text-black">
                 <p className="indent-6 leading-relaxed">
                   लिखितम धनीका नाम सहकारी ऐन <strong>{t.SahakariAin || '२०४८'}</strong> बमोजिम
                   जिल्ला सहकारी कार्यालय, <strong>{t.JillaSahakariAddress || 'काठमाडौं'}</strong>{' '}
@@ -223,7 +240,7 @@ export default function LoanDhitoTamasukPrint() {
 
                 {/* Tapasil Mortgage Table */}
                 <div className="pt-2">
-                  <div className="text-center font-bold text-[10px] uppercase border-b border-black pb-0.5 mb-1">
+                  <div className="text-center font-bold text-[10px] uppercase pb-0.5 mb-1">
                     तपसिल: जग्गा धितोको विवरण
                   </div>
                   <table className="w-full text-[10px] border border-black text-center border-collapse">
@@ -271,9 +288,41 @@ export default function LoanDhitoTamasukPrint() {
                         बायाँ
                       </div>
                     </div>
-                    <div className="border-b border-black pt-3"></div>
+                    <div className="border-b border-black pt-8"></div>
                     <p className="font-bold text-[10px]">ऋणीको सहीछाप</p>
                     <p className="text-[10px]">नाम: {t.BorrowerName || mem?.FullName}</p>
+                  </div>
+                </div>
+
+                {/* Witnesses */}
+                <div className="pt-2 space-y-1 text-black">
+                  <div className="font-bold border-b border-black pb-1 text-center">साक्षीहरू</div>
+                  <div className="flex items-center justify-between gap-2 pt-3 whitespace-nowrap text-[9px]">
+                    <p className="font-bold">१. साक्षी</p>
+                    <p>
+                      नाम: <strong>{t.SakshiName1 || '………………'}</strong>
+                    </p>
+                    <p>जिल्ला: {t.SakshiDistrict1 || '…………'}</p>
+                    <p>गा.वि.स/न.पा: {t.SakshiPalika1 || '…………'}</p>
+                    <p>वडा नं.: {convertToNepaliNumber(t.SakshiWardNo1) || '…'}</p>
+                    {t.SakshiMemberNo1 && (
+                      <p>सदस्य नं.: {convertToNepaliNumber(t.SakshiMemberNo1)}</p>
+                    )}
+                    <p>दस्तखत: …………………………</p>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 border-t border-black pt-3 whitespace-nowrap text-[9px]">
+                    <p className="font-bold">२. साक्षी</p>
+                    <p>
+                      नाम: <strong>{t.SakshiName2 || '………………'}</strong>
+                    </p>
+                    <p>जिल्ला: {t.SakshiDistrict2 || '…………'}</p>
+                    <p>गा.वि.स/न.पा: {t.SakshiPalika2 || '…………'}</p>
+                    <p>वडा नं.: {convertToNepaliNumber(t.SakshiWardNo2) || '…'}</p>
+                    {t.SakshiMemberNo2 && (
+                      <p>सदस्य नं.: {convertToNepaliNumber(t.SakshiMemberNo2)}</p>
+                    )}
+                    <p>दस्तखत: …………………………</p>
                   </div>
                 </div>
 

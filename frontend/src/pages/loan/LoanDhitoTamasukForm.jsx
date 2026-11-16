@@ -466,7 +466,7 @@ export default function LoanDhitoTamasukForm() {
         setFieldValue('SakshiDistrict1', s1.SakshiDistrict || '');
         setFieldValue('SakshiPalika1', s1.SakshiVDCMUN || '');
         setFieldValue('SakshiWardNo1', s1.SakshiWardNo ? String(s1.SakshiWardNo) : '');
-        setFieldValue('SakshiMemberNo1', s1.MemberNo || '');
+        setFieldValue('SakshiMemberNo1', '');
 
         if (sakshis.length > 1) {
           const s2 = sakshis[1];
@@ -474,7 +474,7 @@ export default function LoanDhitoTamasukForm() {
           setFieldValue('SakshiDistrict2', s2.SakshiDistrict || '');
           setFieldValue('SakshiPalika2', s2.SakshiVDCMUN || '');
           setFieldValue('SakshiWardNo2', s2.SakshiWardNo ? String(s2.SakshiWardNo) : '');
-          setFieldValue('SakshiMemberNo2', s2.MemberNo || '');
+          setFieldValue('SakshiMemberNo2', '');
         }
       }
 
@@ -1412,6 +1412,83 @@ export default function LoanDhitoTamasukForm() {
               <div className="border border-slate-300 bg-amber-50/20 p-6 rounded-lg text-sm text-slate-800 leading-relaxed space-y-4">
                 <div className="text-center font-bold text-base text-slate-900 border-b pb-2">
                   धितो तमसुक
+                </div>
+
+                {/* Top Office Sanction & Endorsement Memo Block (कार्यालय लगानी टिप्पणी खण्ड) */}
+                <div className="border border-slate-300 rounded-lg p-3 bg-white text-slate-800 shadow-sm">
+                  <div className="flex flex-col sm:flex-row gap-4 items-start">
+                    {/* Left Thumbprints Box */}
+                    <div className="flex flex-col items-center justify-center p-2 border-b sm:border-b-0 sm:border-r border-slate-300 pr-4 shrink-0 self-stretch sm:self-auto">
+                      <div className="flex items-end">
+                        <div className="flex items-end justify-center w-16 h-16 border border-slate-400 bg-slate-50 p-1">
+                          <p className="text-xs text-slate-500 font-medium">दायाँ</p>
+                        </div>
+                        <div className="h-6 border-l border-slate-400 mx-1"></div>
+                        <div className="flex items-end justify-center w-16 h-16 border border-slate-400 bg-slate-50 p-1">
+                          <p className="text-xs text-slate-500 font-medium">बायाँ</p>
+                        </div>
+                      </div>
+                      <p className="text-[11px] font-medium text-slate-600 mt-1">सहिछाप / ल्याप्चे</p>
+                    </div>
+
+                    {/* Right: Reg & Date + Memo Statement + Staff Signs */}
+                    <div className="flex-1 w-full flex flex-col justify-between space-y-2">
+                      <div className="flex justify-between items-center border-b border-slate-200 pb-1 text-xs">
+                        <div>
+                          दर्ता नं. :{' '}
+                          <span className="font-bold text-slate-900">
+                            {convertToNepaliNumber(
+                              enterprise?.RegisterNo ||
+                                enterprise?.registerno ||
+                                enterprise?.panno ||
+                                ''
+                            )}
+                          </span>
+                        </div>
+                        <div>
+                          मिति :{' '}
+                          <span className="font-bold font-mono text-slate-900">
+                            {convertToNepaliNumber(values.EntryDate || '')}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="text-xs text-slate-800 leading-relaxed text-justify">
+                        <p>
+                          श्री{' '}
+                          <strong>
+                            {enterprise?.CompanyName || enterprise?.companyname || 'सहकारी संस्था लि.'}
+                          </strong>{' '}
+                          को मुख्य कार्यलय संस्थाका शेयर सदस्य श्री{' '}
+                          <strong>{values.BorrowerName || memberDetail?.FullName || '—'}</strong> ले
+                          संस्थाका ऋण व्यवस्थापन कार्यबिधि तथा तत्सम्बन्धी कानुनी प्रकृया समेत
+                          पढीबाची सुनाउदा चित्त बुझाई सहिछाप गरी ऋण लिएकोले आजकै मितिमा ने. रू.{' '}
+                          <strong>{convertToNepaliNumber(values.LoanAmount) || '—'}</strong>{' '}
+                          (अक्षरेपी रु. <strong>{values.LoanAmountWords || '—'}</strong>) मात्र लगानी
+                          गरियो |
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap justify-between gap-4 pt-2 border-t border-slate-200 text-xs">
+                        <div className="space-y-0.5">
+                          <p className="font-bold text-slate-900">तमसुक तयार गर्ने :</p>
+                          <p className="text-slate-400">दस्तखत: ....................</p>
+                          <p>
+                            नाम : <strong>{values.LoanBhibhagPramukh || '—'}</strong>
+                          </p>
+                          <p className="text-slate-500 text-[11px]">पद : ऋण बिभाग प्रमुख</p>
+                        </div>
+                        <div className="space-y-0.5">
+                          <p className="font-bold text-slate-900">तमसुक प्रमाणित गर्ने :</p>
+                          <p className="text-slate-400">दस्तखत: ....................</p>
+                          <p>
+                            नाम : <strong>{values.Byabasthapak || '—'}</strong>
+                          </p>
+                          <p className="text-slate-500 text-[11px]">पद : व्यवस्थापक</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <p className="text-justify indent-6">

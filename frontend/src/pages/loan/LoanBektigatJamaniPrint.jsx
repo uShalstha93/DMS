@@ -78,7 +78,7 @@ export default function LoanBektigatJamaniPrint() {
             </div>
 
             {/* Title */}
-            <div className="text-center font-bold text-base border-b border-black pb-1 mb-5">
+            <div className="text-center font-bold text-base mb-3">
               व्यक्तिगत जमानी तमसुक
             </div>
 
@@ -94,9 +94,8 @@ export default function LoanBektigatJamaniPrint() {
                   <p>गा.वि.स/न.पा: {j.SakshiPalika1 || '…………'}</p>
                   <p>वडा नं.: {convertToNepaliNumber(j.SakshiWardNo1) || '…'}</p>
                   <p>बस्ने वर्ष: {convertToNepaliNumber(j.SakshiAge1) || '…'}</p>
-                  <p>को: {j.SakshiRelation1 || '…………'}</p>
                   <div className="pt-2">
-                    <p className="text-[11px]">दस्तखत: ……………</p>
+                    <p className="text-[11px]">दस्तखत: ……………………</p>
                   </div>
                 </div>
 
@@ -107,9 +106,8 @@ export default function LoanBektigatJamaniPrint() {
                   <p>गा.वि.स/न.पा: {j.SakshiPalika2 || '…………'}</p>
                   <p>वडा नं.: {convertToNepaliNumber(j.SakshiWardNo2) || '…'}</p>
                   <p>बस्ने वर्ष: {convertToNepaliNumber(j.SakshiAge2) || '…'}</p>
-                  <p>को: {j.SakshiRelation2 || '…………'}</p>
                   <div className="pt-2">
-                    <p className="text-[11px]">दस्तखत: ……………</p>
+                    <p className="text-[11px]">दस्तखत: ……………………</p>
                   </div>
                 </div>
               </div>
@@ -129,13 +127,13 @@ export default function LoanBektigatJamaniPrint() {
                   <strong>{j.BorrowerCitizenshipDistrict || '……'}</strong> जिल्ला{' '}
                   <strong>{j.BorrowerCitizenshipPalika || '……'}</strong> गा. वि. स. / नगरपालिका/ गाउपालिका वडा न.{' '}
                   <strong>{convertToNepaliNumber(j.BorrowerCitizenshipWard) || '…'}</strong> जारी मिति{' '}
-                  <strong>{j.BorrowerCitizenshipDate || '…………'}</strong> जारी जिल्ला{' '}
+                  <strong>{convertToNepaliNumber(j.BorrowerCitizenshipDate) || '…………'}</strong> जारी जिल्ला{' '}
                   <strong>{j.BorrowerCitizenshipDistrict || '……'}</strong> आगे यस{' '}
                   <strong>{ent?.CompanyName || ent?.companyname || 'सहकारी संस्था लि.'}</strong> बाट{' '}
                   <strong>{j.LoanPurpose || '…………'}</strong> परियोजनाको निमित्त रु.{' '}
                   <strong>{convertToNepaliNumber(j.LoanAmount) || '………'}</strong> (अक्षरेपी{' '}
                   <strong>{loanWords || '…………………'}</strong>) मात्र ऋण लिई मिति{' '}
-                  <strong>{j.LoanDate || '…………'}</strong> मा तमसुक गरि लिएको कर्जा निजको{' '}
+                  <strong>{convertToNepaliNumber(j.LoanDate) || '…………'}</strong> मा तमसुक गरि लिएको कर्जा निजको{' '}
                   <strong>{ent?.CompanyName || ent?.companyname || 'सहकारी संस्था लि.'}</strong>{' '}
                   {ent?.VDCMUN || ''} न पा/गा.पा वडा न. {ent?.WardNo || ''} संगको सर्त सम्झौता उल्लघन गरि कर्जा नतिरेमा लिलाम बिक्रि वा अन्य ब्यबस्थावाट{' '}
                   <strong>{ent?.CompanyName || ent?.companyname || 'सहकारी संस्था लि.'}</strong> सहकारी संस्था लि.{' '}
@@ -162,14 +160,14 @@ export default function LoanBektigatJamaniPrint() {
                         बायाँ
                       </div>
                     </div>
-                    <div className="border-b border-black pt-4"></div>
+                    <div className="border-b border-black pt-12"></div>
                     <p className="font-bold text-[11px]">जमानी दिनेको सहि</p>
                     <p className="text-[11px]">नाम: {j.JamaniName}</p>
                   </div>
                 </div>
 
                 {/* Legal Date */}
-                <div className="pt-3 text-center text-[12px] font-semibold border-t border-black">
+                <div className="pt-3 text-center text-[12px] font-semibold">
                   ईति सम्वत् <strong>{convertToNepaliNumber(j.LegalYear)}</strong> साल{' '}
                   <strong>{j.LegalMonth}</strong> महिना{' '}
                   <strong>{convertToNepaliNumber(j.LegalDay)}</strong> गते रोज{' '}
@@ -179,7 +177,7 @@ export default function LoanBektigatJamaniPrint() {
             </div>
 
             {/* Bottom Signatures */}
-            <div className="pt-8 flex justify-between items-center text-[12px] font-semibold px-4">
+            <div className="pt-12 flex justify-between items-center text-[12px] font-semibold px-4">
               <div className="text-center space-y-1">
                 <div className="border-b border-black w-36 pb-3 mb-1"></div>
                 <p>तयार गर्नेको दस्तखत</p>

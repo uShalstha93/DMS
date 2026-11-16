@@ -67,7 +67,7 @@ export default function ViewLoanPratigya() {
           </Link>
         )}
         {isApproved && (
-          <Link to={`/loan/pratigya/${id}/print`} className="btn-primary">
+          <Link to={`/loan/pratigya/print/${id}`} className="btn-primary">
             <Printer className="size-4" /> A4 प्रिन्ट गर्नुहोस्
           </Link>
         )}
@@ -77,11 +77,10 @@ export default function ViewLoanPratigya() {
         <div
           role="status"
           aria-live="polite"
-          className={`mb-4 flex items-center justify-between rounded-md p-3 text-sm ${
-            message.type === 'ok'
+          className={`mb-4 flex items-center justify-between rounded-md p-3 text-sm ${message.type === 'ok'
               ? 'border border-emerald-200 bg-emerald-50 text-emerald-800'
               : 'border border-red-200 bg-red-50 text-red-800'
-          }`}
+            }`}
         >
           <span>{message.text}</span>
           <button

@@ -71,7 +71,7 @@ export default function ViewLoanBektigatJamani() {
           </Link>
         )}
         {isApproved && (
-          <Link to={`/loan/bektigat-jamani/${id}/print`} className="btn-primary">
+          <Link to={`/loan/bektigat-jamani/print/${id}`} className="btn-primary">
             <Printer className="size-4" /> A4 प्रिन्ट गर्नुहोस्
           </Link>
         )}
@@ -81,11 +81,10 @@ export default function ViewLoanBektigatJamani() {
         <div
           role="status"
           aria-live="polite"
-          className={`mb-4 flex items-center justify-between rounded-md p-3 text-sm ${
-            message.type === 'ok'
+          className={`mb-4 flex items-center justify-between rounded-md p-3 text-sm ${message.type === 'ok'
               ? 'border border-emerald-200 bg-emerald-50 text-emerald-800'
               : 'border border-red-200 bg-red-50 text-red-800'
-          }`}
+            }`}
         >
           <span>{message.text}</span>
           <button
@@ -127,7 +126,6 @@ export default function ViewLoanBektigatJamani() {
                 <p>गा.वि.स/न.पा.: {j.SakshiPalika1 || '—'}</p>
                 <p>वडा नं.: {convertToNepaliNumber(j.SakshiWardNo1) || '—'}</p>
                 <p>उमेर: {convertToNepaliNumber(j.SakshiAge1) || '—'} वर्ष</p>
-                <p>को: {j.SakshiRelation1 || '—'}</p>
               </div>
               <div className="space-y-1 pt-3 border-t border-slate-200">
                 <p className="font-medium">२. साक्षी</p>
@@ -136,7 +134,6 @@ export default function ViewLoanBektigatJamani() {
                 <p>गा.वि.स/न.पा.: {j.SakshiPalika2 || '—'}</p>
                 <p>वडा नं.: {convertToNepaliNumber(j.SakshiWardNo2) || '—'}</p>
                 <p>उमेर: {convertToNepaliNumber(j.SakshiAge2) || '—'} वर्ष</p>
-                <p>को: {j.SakshiRelation2 || '—'}</p>
               </div>
             </div>
 
@@ -294,7 +291,7 @@ export default function ViewLoanBektigatJamani() {
                 कानूनी प्रयोजनका लागि आधिकारिक व्यक्तिगत जमानी तमसुकलाई A4 portrait ढाँचामा प्रिन्ट गर्नुहोस्।
               </p>
               <Link
-                to={`/loan/bektigat-jamani/${id}/print`}
+                to={`/loan/bektigat-jamani/print/${id}`}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center gap-1.5 w-full rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow hover:bg-indigo-700"

@@ -175,9 +175,7 @@ export default function LoanBektigatJamaniList() {
                         </Link>
                         {r.ApprovedStatus === 1 ? (
                           <Link
-                            to={`/loan/bektigat-jamani/${r.id}/print`}
-                            target="_blank"
-                            rel="noreferrer"
+                            to={`/loan/bektigat-jamani/print/${r.id}`}
                             className="inline-flex items-center gap-1 font-medium text-ink hover:text-ledger hover:underline"
                           >
                             <Printer size={13} /> Print

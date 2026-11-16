@@ -122,7 +122,7 @@ export default function LoanApplicationPrint() {
           </div>
 
           {/* Bottom Signatures Area */}
-          <div className="mt-20 pt-8 border-t border-black/30">
+          <div className="mt-20 pt-12 border-t border-black/30">
             <div className="grid grid-cols-2 gap-8 text-sm">
               {/* Member Sign */}
               <div>

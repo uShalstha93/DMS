@@ -138,19 +138,9 @@ export default function LoanRulesPrint() {
                 <span className='mt-5'>दस्तखत: ________________________</span>
               </div>
             </div>
-            {/* <div className="space-y-4 text-sm mb-6">
-              <div className="flex justify-between items-center">
-                <span>१. नाम थर: <strong className="underline ml-2">{m?.FullName || '—'}</strong></span>
-                <span>दस्तखत: ________________________</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>२. नाम थर: <strong className="underline ml-2">{rule.Person2 || '—'}</strong></span>
-                <span>दस्तखत: ________________________</span>
-              </div>
-            </div> */}
 
             {/* Staff Sign */}
-            <div className="text-right pt-2 mt-2">
+            <div className="text-right pt-8 mt-2">
               <p className="mb-4">दस्तखत: _________________</p>
               <p className="font-bold text-sm">{rule.StaffName || 'कर्मचारीको नाम'}</p>
               <p className="text-xs">{rule.StaffPost || 'पद'}</p>
