@@ -54,6 +54,10 @@ import LoanDhitoTamasukList from './pages/loan/LoanDhitoTamasukList';
 import LoanDhitoTamasukForm from './pages/loan/LoanDhitoTamasukForm';
 import ViewLoanDhitoTamasuk from './pages/loan/ViewLoanDhitoTamasuk';
 import LoanDhitoTamasukPrint from './pages/loan/LoanDhitoTamasukPrint';
+import LoanPurposeList from './pages/loan/LoanPurposeList';
+import LoanPurposeForm from './pages/loan/LoanPurposeForm';
+import ViewLoanPurpose from './pages/loan/ViewLoanPurpose';
+import LoanPurposePrint from './pages/loan/LoanPurposePrint';
 
 function RequireAuth({ children }) {
   const token = useSelector((s) => s.auth.token);
@@ -80,7 +84,7 @@ export default function App() {
         <Route path="documents/:id/edit" element={<Guard perm="document.create"><DocumentForm /></Guard>} />
         <Route path="documents/:id/print" element={<Guard perm="document.print"><DocumentPrint /></Guard>} />
 
-        <Route path="approvals" element={<Guard perm={['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve']}><Approvals /></Guard>} />
+        <Route path="approvals" element={<Guard perm={['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve', 'loanrule.approve', 'loanpratigya.approve', 'loanmanjurinaama.approve', 'loanpariwarikswikriti.approve', 'loanbektigatjamani.approve', 'loandhitotamasuk.approve', 'loanpurpose.approve']}><Approvals /></Guard>} />
 
         <Route path="chat" element={<Guard perm="chat.use"><Chat /></Guard>} />
 
@@ -152,7 +156,13 @@ export default function App() {
         <Route path="loan/dhito-tamasuk/print/:id" element={<Guard perm="loandhitotamasuk.view"><LoanDhitoTamasukPrint /></Guard>} />
         
         <Route path="loan/personal-tamasuk" element={<ComingSoon title="Loan Personal Tamasuk" description="Details of sanctioned loans." />} />
-        <Route path="loan/purpose" element={<ComingSoon title="Purpose Of Loan" description="Details of sanctioned loans." />} />
+        <Route path="loan/purpose" element={<Guard perm="loanpurpose.view"><LoanPurposeList /></Guard>} />
+        <Route path="loan/purpose/new" element={<Guard perm="loanpurpose.create"><LoanPurposeForm /></Guard>} />
+        <Route path="loan/purpose/edit/:id" element={<Guard perm="loanpurpose.edit"><LoanPurposeForm /></Guard>} />
+        <Route path="loan/purpose/:id" element={<Guard perm="loanpurpose.view"><ViewLoanPurpose /></Guard>} />
+        <Route path="loan/purpose/:id/edit" element={<Guard perm="loanpurpose.edit"><LoanPurposeForm /></Guard>} />
+        <Route path="loan/purpose/:id/print" element={<Guard perm="loanpurpose.view"><LoanPurposePrint /></Guard>} />
+        <Route path="loan/purpose/print/:id" element={<Guard perm="loanpurpose.view"><LoanPurposePrint /></Guard>} />
         <Route path="loan/malpot-application" element={<ComingSoon title="Loan Malpot Application" description="Details of sanctioned loans." />} />
         <Route path="loan/naapi-saakha" element={<ComingSoon title="Loan Naapi Saakha" description="Details of sanctioned loans." />} />
         <Route path="loan/analysis5c" element={<ComingSoon title="5C Analysis" description="Details of sanctioned loans." />} />

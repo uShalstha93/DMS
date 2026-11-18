@@ -18,6 +18,7 @@ import loanManjurinaamaRoutes from './routes/loanManjurinaama.js';
 import loanPariwarikSwikritiRoutes from './routes/loanPariwarikSwikriti.js';
 import loanBektigatJamaniRoutes from './routes/loanBektigatJamani.js';
 import loanDhitoTamasukRoutes from './routes/loanDhitoTamasuk.js';
+import loanPurposeRoutes from './routes/loanPurpose.js';
 import organizationRoutes from './routes/organization.js';
 import { UPLOAD_ROOT } from './utils/uploads.js';
 
@@ -45,6 +46,7 @@ app.use('/api/loan-manjurinaamas', loanManjurinaamaRoutes);
 app.use('/api/loan-pariwarik-swikriti', loanPariwarikSwikritiRoutes);
 app.use('/api/loan-bektigat-jamani', loanBektigatJamaniRoutes);
 app.use('/api/loan-dhito-tamasuk', loanDhitoTamasukRoutes);
+app.use('/api/loan-purposes', loanPurposeRoutes);
 app.use('/api/organization', organizationRoutes);
 
 app.use((_req, res) => res.status(404).json({ message: 'Not found' }));

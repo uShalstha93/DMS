@@ -34,3 +34,13 @@ export const convertTextToNepaliNumbers = (text) => {
         return nepaliNumbers[match] || match;
     });
 };
+
+// Formats a number (whether in Nepali digits or English digits) into Nepali currency format with commas
+export const formatNepaliCurrency = (val) => {
+    if (val === null || val === undefined || val === '') return '';
+    const nepToEng = { '०': '0', '१': '1', '२': '2', '३': '3', '४': '4', '५': '5', '६': '6', '७': '7', '८': '8', '९': '9' };
+    const cleanStr = String(val).replace(/[, ]/g, '').replace(/[०-९]/g, (d) => nepToEng[d] || d);
+    const num = parseFloat(cleanStr);
+    if (isNaN(num)) return convertToNepaliNumber(val);
+    return convertToNepaliNumber(num.toLocaleString('en-IN'));
+};

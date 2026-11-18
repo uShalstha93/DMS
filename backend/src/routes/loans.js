@@ -181,6 +181,15 @@ router.get('/stats', wrap(async (req, res) => {
     branchFilter ? [branchFilter] : []
   );
 
+  // 10. loanpurposeofloans pending
+  const purposeWhere = branchFilter ? 'WHERE BranchID = ?' : '';
+  const [[purposeRow]] = await pool.query(
+    `SELECT COUNT(*) AS total,
+            COALESCE(SUM(COALESCE(ApprovedStatus, 0) = 0), 0) AS pending
+       FROM loanpurposeofloans ${purposeWhere}`,
+    branchFilter ? [branchFilter] : []
+  );
+
   const pendingDetail = Number(lRow?.pending || 0);
   const pendingRequest = Number(rRow?.pending || 0);
   const pendingApplication = Number(aRow?.pending || 0);
@@ -190,10 +199,11 @@ router.get('/stats', wrap(async (req, res) => {
   const pendingPariwarikSwikriti = Number(swikritiRow?.pending || 0);
   const pendingBektigatJamani = Number(jamaniRow?.pending || 0);
   const pendingDhitoTamasuk = Number(dhitoRow?.pending || 0);
-  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule + pendingPratigya + pendingManjurinaama + pendingPariwarikSwikriti + pendingBektigatJamani + pendingDhitoTamasuk;
+  const pendingLoanPurpose = Number(purposeRow?.pending || 0);
+  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule + pendingPratigya + pendingManjurinaama + pendingPariwarikSwikriti + pendingBektigatJamani + pendingDhitoTamasuk + pendingLoanPurpose;
 
   res.json({
-    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0) + Number(pratigyaRow?.total || 0) + Number(manjurinaamaRow?.total || 0) + Number(swikritiRow?.total || 0) + Number(jamaniRow?.total || 0) + Number(dhitoRow?.total || 0),
+    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0) + Number(pratigyaRow?.total || 0) + Number(manjurinaamaRow?.total || 0) + Number(swikritiRow?.total || 0) + Number(jamaniRow?.total || 0) + Number(dhitoRow?.total || 0) + Number(purposeRow?.total || 0),
     pending: totalPending,
     pendingDetail,
     pendingRequest,
@@ -204,6 +214,7 @@ router.get('/stats', wrap(async (req, res) => {
     pendingPariwarikSwikriti,
     pendingBektigatJamani,
     pendingDhitoTamasuk,
+    pendingLoanPurpose,
   });
 }));
 

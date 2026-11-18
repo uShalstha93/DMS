@@ -1619,6 +1619,62 @@ export default function LoanDhitoTamasukForm() {
                   </table>
                 </div>
 
+                {/* Thumbprints */}
+                <div className="pt-4 flex justify-end">
+                  <div className="text-center space-y-1">
+                    <div className="flex gap-2 justify-center">
+                      <div className="w-16 h-16 border border-slate-400 bg-white flex items-center justify-center text-[10px] text-gray-500">
+                        दायाँ
+                      </div>
+                      <div className="w-16 h-16 border border-slate-400 bg-white flex items-center justify-center text-[10px] text-gray-500">
+                        बायाँ
+                      </div>
+                    </div>
+                    <div className="border-b border-slate-400 pt-3"></div>
+                    <p className="font-bold text-xs text-slate-800">ऋणीको सहीछाप</p>
+                    <p className="text-xs text-slate-700">
+                      नाम: {values.BorrowerName || memberDetail?.FullName || '—'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Witnesses Section: below Borrower's thumbprint & sign, above Legal Date */}
+                <div className="pt-3 border-t border-slate-200">
+                  <div className="font-semibold text-slate-900 border-b pb-1 text-center text-xs">
+                    साक्षीहरू (Witnesses):
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 text-xs text-slate-700">
+                    <div className="p-2 border border-slate-200 rounded bg-white">
+                      <p className="font-medium text-slate-800">१. पहिलो साक्षी</p>
+                      <p>
+                        नाम: <strong className="text-slate-900">{values.SakshiName1 || '—'}</strong>
+                      </p>
+                      <p>
+                        जिल्ला: {values.SakshiDistrict1 || '—'} / न.पा: {values.SakshiPalika1 || '—'}
+                      </p>
+                      <p>वडा नं.: {convertToNepaliNumber(values.SakshiWardNo1) || '—'}</p>
+                      {values.SakshiMemberNo1 && (
+                        <p>सदस्य नं.: {convertToNepaliNumber(values.SakshiMemberNo1)}</p>
+                      )}
+                      <div className="pt-1 text-slate-400">दस्तखत: ........................</div>
+                    </div>
+                    <div className="p-2 border border-slate-200 rounded bg-white">
+                      <p className="font-medium text-slate-800">२. दोस्रो साक्षी</p>
+                      <p>
+                        नाम: <strong className="text-slate-900">{values.SakshiName2 || '—'}</strong>
+                      </p>
+                      <p>
+                        जिल्ला: {values.SakshiDistrict2 || '—'} / न.पा: {values.SakshiPalika2 || '—'}
+                      </p>
+                      <p>वडा नं.: {convertToNepaliNumber(values.SakshiWardNo2) || '—'}</p>
+                      {values.SakshiMemberNo2 && (
+                        <p>सदस्य नं.: {convertToNepaliNumber(values.SakshiMemberNo2)}</p>
+                      )}
+                      <div className="pt-1 text-slate-400">दस्तखत: ........................</div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Legal date */}
                 <div className="text-center font-semibold pt-4">
                   ईति सम्वत्{' '}
