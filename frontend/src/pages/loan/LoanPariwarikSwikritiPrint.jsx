@@ -121,7 +121,7 @@ export default function LoanPariwarikSwikritiPrint() {
             </div>
 
             {/* ईति सम्वत् Line */}
-            <div className="text-center font-bold text-xs border-t border-black pt-4 mb-8">
+            <div className="text-center font-bold text-xs border-t pt-4 mb-8">
               ईति सम्वत् {convertToNepaliNumber(p.LegalYear) || p.LegalYear || '…………'} साल{' '}
               {p.LegalMonth || '…………'} महिना{' '}
               {convertToNepaliNumber(p.LegalDay) || p.LegalDay || '……'} गते{' '}
@@ -129,7 +129,7 @@ export default function LoanPariwarikSwikritiPrint() {
             </div>
 
             {/* Bottom Officers */}
-            <div className="grid grid-cols-2 gap-8 text-center text-xs border-t border-black pt-6">
+            <div className="grid grid-cols-2 gap-8 text-center text-xs pt-6">
               <div>
                 <p className="mb-8">दस्तखत: ________________________</p>
                 <p className="font-bold text-sm">ऋण विभाग प्रमुख</p>

@@ -107,7 +107,7 @@ export default function ViewLoanPariwarikSwikriti() {
             <p className="text-sm text-slate-600">
               {ent?.district || ''} {ent?.munvdc ? `- ${ent.munvdc}` : ''} {ent?.wardno ? `-${convertToNepaliNumber(ent.wardno)}` : ''}, {ent?.tole || ''}
             </p>
-            <div className="mt-2 text-xs text-slate-500">
+            <div className="text-xs text-slate-500">
               सम्पर्क: {ent?.contactno || '—'} | प्यान नं: {ent?.panno || '—'}
             </div>
           </div>

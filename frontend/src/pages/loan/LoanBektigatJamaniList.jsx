@@ -57,7 +57,7 @@ export default function LoanBektigatJamaniList() {
   return (
     <>
       <PageHeader
-        title="व्यक्तिगत जमानी तमसुक (Bektigat Jamani)"
+        title="व्यक्तिगत जमानी (Bektigat Jamani)"
         subtitle="ऋण असुलीका लागि जमानी बस्ने व्यक्तिद्वारा सहीछाप गरिएको व्यक्तिगत जमानी तमसुकको सूची"
       >
         {canCreate && (

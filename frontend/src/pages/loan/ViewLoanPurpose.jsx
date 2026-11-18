@@ -105,11 +105,12 @@ export default function ViewLoanPurpose() {
             <h1 className="text-xl font-bold text-slate-900">
               {ent?.CompanyName || ent?.companyname || 'सहकारी संस्था लि.'}
             </h1>
-            <p className="text-xs text-slate-600">
-              {ent?.Address || ent?.address
-                ? `${ent.Address || ent.address}${ent.WardNo || ent.wardno ? ` - ${convertToNepaliNumber(ent.WardNo || ent.wardno)}` : ''}`
-                : ''}
+            <p className="text-sm text-slate-600">
+              {ent?.district || ''} {ent?.munvdc ? `, ${ent.munvdc}` : ''} {ent?.wardno ? `-${convertToNepaliNumber(ent.wardno)}` : ''}, {ent?.tole || ''}
             </p>
+            <div className="text-xs text-slate-500">
+              सम्पर्क: {ent?.contactno || '—'} | प्यान नं: {ent?.panno || '—'}
+            </div>
           </div>
 
           {/* Date */}

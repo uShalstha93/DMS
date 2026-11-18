@@ -82,8 +82,8 @@ export default function ViewLoanBektigatJamani() {
           role="status"
           aria-live="polite"
           className={`mb-4 flex items-center justify-between rounded-md p-3 text-sm ${message.type === 'ok'
-              ? 'border border-emerald-200 bg-emerald-50 text-emerald-800'
-              : 'border border-red-200 bg-red-50 text-red-800'
+            ? 'border border-emerald-200 bg-emerald-50 text-emerald-800'
+            : 'border border-red-200 bg-red-50 text-red-800'
             }`}
         >
           <span>{message.text}</span>
@@ -102,15 +102,18 @@ export default function ViewLoanBektigatJamani() {
         {/* ── Left Column: Document Sample ─────────────────────────── */}
         <div className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
           {/* Header */}
-          <div className="text-center border-b pb-4 mb-6">
+          <div className="text-center border-b pb-4 mb-4">
             <h2 className="text-xl font-bold text-slate-900">{ent?.CompanyName || ent?.companyname || 'सहकारी संस्था लि.'}</h2>
             <p className="text-sm text-slate-600">
-              {ent?.District || ent?.district || ''} {ent?.VDCMUN || ent?.munvdc ? `- ${ent.VDCMUN || ent.munvdc}` : ''} {ent?.WardNo || ent?.wardno ? `-${convertToNepaliNumber(ent.WardNo || ent.wardno)}` : ''}
+              {ent?.district || ''} {ent?.munvdc ? `, ${ent.munvdc}` : ''} {ent?.wardno ? `-${convertToNepaliNumber(ent.wardno)}` : ''}, {ent?.tole || ''}
             </p>
+            <div className="text-xs text-slate-500">
+              सम्पर्क: {ent?.contactno || '—'} | प्यान नं: {ent?.panno || '—'}
+            </div>
           </div>
 
           {/* Title */}
-          <div className="text-center font-bold text-base text-slate-900 border-b border-dashed pb-2 mb-6">
+          <div className="text-center font-bold text-base text-slate-900 border-b border-dashed pb-2 mb-2">
             व्यक्तिगत जमानी तमसुक
           </div>
 

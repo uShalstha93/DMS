@@ -62,7 +62,7 @@ export default function LoanPurposePrint() {
       </div>
 
       {/* Printable Sheet */}
-      <div className="print-area mx-auto max-w-[210mm] bg-white p-8 text-black shadow-sm print:m-0 print:p-0 print:shadow-none font-serif text-[11pt] leading-normal">
+      <div className="print-area mx-auto max-w-[210mm] bg-white p-8 text-black shadow-sm print:m-0 print:p-0 print:shadow-none text-[11pt] leading-normal">
         <style dangerouslySetInnerHTML={{
           __html: `
             @page {
@@ -89,7 +89,7 @@ export default function LoanPurposePrint() {
         }} />
 
         {/* Company Info Header */}
-        <div className="text-center pb-3 border-b border-black mb-6">
+        <div className="text-center pb-3 border-b mb-6">
           <h1 className="text-xl font-bold uppercase tracking-wider text-black">
             {ent?.CompanyName || ent?.companyname || 'सहकारी संस्था लि.'}
           </h1>

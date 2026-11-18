@@ -90,14 +90,15 @@ export default function LoanDhitoTamasukPrint() {
         <div className="print-page min-h-[297mm] p-6 flex flex-col justify-between text-black">
           <div>
             {/* Header / Enterprise Details */}
-            <div className="company-info text-center border-b border-black pb-2 mb-3">
+            <div className="company-info text-center border-b pb-2 mb-3">
               <h1 className="text-xl font-bold tracking-wide text-black">
                 {ent?.CompanyName || ent?.companyname || 'सहकारी संस्था लि.'}
               </h1>
               <h2 className="text-xs font-medium text-black mt-0.5">
-                {ent?.VDCMUN || ent?.munvdc ? `${ent.VDCMUN || ent.munvdc}` : ''}
-                {ent?.WardNo || ent?.wardno ? ` - ${convertToNepaliNumber(ent.WardNo || ent.wardno)}` : ''}
-                {ent?.District || ent?.district ? `, ${ent.District || ent.district}` : ''}
+                {ent?.munvdc ? `${ent.munvdc}` : ''}
+                {ent?.wardno ? ` - ${convertToNepaliNumber(ent.wardno)}` : ''}
+                {ent?.district ? `, ${ent.district}` : ''}
+                {ent?.province ? `, ${ent.province}` : ''}
               </h2>
               <div className="flex justify-between items-center text-[10px] text-black mt-2 font-mono">
                 <span>

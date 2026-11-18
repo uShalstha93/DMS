@@ -71,10 +71,16 @@ export default function LoanBektigatJamaniPrint() {
                 {ent?.CompanyName || ent?.companyname || 'सहकारी संस्था लि.'}
               </h1>
               <h2 className="text-sm font-medium text-black mt-1">
-                {ent?.VDCMUN || ent?.munvdc ? `${ent.VDCMUN || ent.munvdc}` : ''}
-                {ent?.WardNo || ent?.wardno ? ` - ${convertToNepaliNumber(ent.WardNo || ent.wardno)}` : ''}
-                {ent?.District || ent?.district ? `, ${ent.District || ent.district}` : ''}
+                {ent?.munvdc ? `${ent.munvdc}` : ''}
+                {ent?.wardno ? ` - ${convertToNepaliNumber(ent.wardno)}` : ''}
+                {ent?.district ? `, ${ent.district}` : ''}
+                {ent?.province ? `, ${ent.province}` : ''}
               </h2>
+              <div className="text-xs text-black mt-1">
+                {ent?.contactno ? `फोन नं: ${ent.contactno}` : ''}
+                {ent?.panno ? ` | प्यान नं: ${ent.panno}` : ''}
+                {ent?.email ? ` | इमेल: ${ent.email}` : ''}
+              </div>
             </div>
 
             {/* Title */}

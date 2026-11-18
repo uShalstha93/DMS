@@ -57,7 +57,7 @@ export default function LoanPariwarikSwikritiList() {
   return (
     <>
       <PageHeader
-        title="पारिवारिक स्वीकृति फारम (Pariwarik Swikriti)"
+        title="पारिवारिक स्वीकृति (Pariwarik Swikriti)"
         subtitle="ऋणी सदस्यको परिवारद्वारा प्रदान गरिएको ऋण स्वीकृति तथा जमानी फारमको सूची"
       >
         {canCreate && (

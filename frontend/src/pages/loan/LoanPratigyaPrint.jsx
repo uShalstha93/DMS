@@ -68,11 +68,11 @@ export default function LoanPratigyaPrint() {
             {/* Date (Right aligned) */}
             <div className="flex justify-end items-center mb-4 text-sm">
               <span className="font-bold mr-1">मिति:</span>
-              <span>{convertToNepaliNumber(p.EntryDate) || p.EntryDate}</span>
+              <span className='font-bold'>{convertToNepaliNumber(p.EntryDate) || p.EntryDate}</span>
             </div>
 
             {/* Title */}
-            <div className="text-center font-bold text-base border-b border-black pb-1 mb-5">
+            <div className="text-center font-bold text-base pb-1 mb-5">
               प्रतिज्ञा पत्र फारम:
             </div>
 

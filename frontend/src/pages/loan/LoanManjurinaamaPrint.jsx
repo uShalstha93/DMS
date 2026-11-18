@@ -70,7 +70,7 @@ export default function LoanManjurinaamaPrint() {
             </div>
 
             {/* Title */}
-            <div className="text-center font-bold text-base border-b border-black pb-1 mb-4">
+            <div className="text-center font-bold text-base pb-1 mb-4">
               मञ्जुरीनामा
             </div>
 
@@ -109,7 +109,7 @@ export default function LoanManjurinaamaPrint() {
 
             {/* तपसिल Table */}
             <div className="mb-4">
-              <h4 className="font-bold text-xs border-b border-black pb-0.5 mb-1.5">तपसिल (धितो जग्गा विवरण)</h4>
+              <h4 className="font-bold text-xs border-b pb-0.5 mb-1.5">तपसिल (धितो जग्गा विवरण)</h4>
               <table className="w-full border-collapse border border-black text-[11px] text-left">
                 <thead>
                   <tr className="bg-slate-100 font-semibold">
@@ -183,7 +183,7 @@ export default function LoanManjurinaamaPrint() {
 
             {/* Witnesses Block */}
             <div className="border border-black p-3 text-xs mb-4">
-              <p className="font-bold border-b border-black pb-1 mb-2">रोहबरका साक्षीहरु:</p>
+              <p className="font-bold border-b border-black pb-1 mb-2">साक्षीहरु:</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="font-semibold">१. साक्षी:</p>
@@ -201,7 +201,7 @@ export default function LoanManjurinaamaPrint() {
             </div>
 
             {/* ईति सम्वत् Line */}
-            <div className="text-center font-bold text-xs border-t border-black pt-3">
+            <div className="text-center font-bold text-xs pt-3">
               ईति सम्वत् {convertToNepaliNumber(m.LegalYear) || m.LegalYear || '…………'} साल{' '}
               {m.LegalMonth || '…………'} महिना{' '}
               {convertToNepaliNumber(m.LegalDay) || m.LegalDay || '……'} गते{' '}
