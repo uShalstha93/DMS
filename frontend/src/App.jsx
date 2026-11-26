@@ -62,6 +62,10 @@ import LoanMalpotList from './pages/loan/LoanMalpotList';
 import LoanMalpotForm from './pages/loan/LoanMalpotForm';
 import ViewLoanMalpot from './pages/loan/ViewLoanMalpot';
 import LoanMalpotPrint from './pages/loan/LoanMalpotPrint';
+import LoanNaapiSakhaList from './pages/loan/LoanNaapiSakhaList';
+import LoanNaapiSakhaForm from './pages/loan/LoanNaapiSakhaForm';
+import ViewLoanNaapiSakha from './pages/loan/ViewLoanNaapiSakha';
+import LoanNaapiSakhaPrint from './pages/loan/LoanNaapiSakhaPrint';
 
 function RequireAuth({ children }) {
   const token = useSelector((s) => s.auth.token);
@@ -88,7 +92,7 @@ export default function App() {
         <Route path="documents/:id/edit" element={<Guard perm="document.create"><DocumentForm /></Guard>} />
         <Route path="documents/:id/print" element={<Guard perm="document.print"><DocumentPrint /></Guard>} />
 
-        <Route path="approvals" element={<Guard perm={['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve', 'loanrule.approve', 'loanpratigya.approve', 'loanmanjurinaama.approve', 'loanpariwarikswikriti.approve', 'loanbektigatjamani.approve', 'loandhitotamasuk.approve', 'loanpurpose.approve', 'loanmalpot.approve']}><Approvals /></Guard>} />
+        <Route path="approvals" element={<Guard perm={['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve', 'loanrule.approve', 'loanpratigya.approve', 'loanmanjurinaama.approve', 'loanpariwarikswikriti.approve', 'loanbektigatjamani.approve', 'loandhitotamasuk.approve', 'loanpurpose.approve', 'loanmalpot.approve', 'loannaapi.approve']}><Approvals /></Guard>} />
 
         <Route path="chat" element={<Guard perm="chat.use"><Chat /></Guard>} />
 
@@ -174,7 +178,13 @@ export default function App() {
         <Route path="loan/malpot-application/:id/edit" element={<Guard perm="loanmalpot.edit"><LoanMalpotForm /></Guard>} />
         <Route path="loan/malpot-application/:id/print" element={<Guard perm="loanmalpot.view"><LoanMalpotPrint /></Guard>} />
         <Route path="loan/malpot-application/print/:id" element={<Guard perm="loanmalpot.view"><LoanMalpotPrint /></Guard>} />
-        <Route path="loan/naapi-saakha" element={<ComingSoon title="Loan Naapi Saakha" description="Details of sanctioned loans." />} />
+        <Route path="loan/naapi-saakha" element={<Guard perm="loannaapi.view"><LoanNaapiSakhaList /></Guard>} />
+        <Route path="loan/naapi-saakha/new" element={<Guard perm="loannaapi.create"><LoanNaapiSakhaForm /></Guard>} />
+        <Route path="loan/naapi-saakha/edit/:id" element={<Guard perm="loannaapi.edit"><LoanNaapiSakhaForm /></Guard>} />
+        <Route path="loan/naapi-saakha/:id" element={<Guard perm="loannaapi.view"><ViewLoanNaapiSakha /></Guard>} />
+        <Route path="loan/naapi-saakha/:id/edit" element={<Guard perm="loannaapi.edit"><LoanNaapiSakhaForm /></Guard>} />
+        <Route path="loan/naapi-saakha/:id/print" element={<Guard perm="loannaapi.view"><LoanNaapiSakhaPrint /></Guard>} />
+        <Route path="loan/naapi-saakha/print/:id" element={<Guard perm="loannaapi.view"><LoanNaapiSakhaPrint /></Guard>} />
         <Route path="loan/analysis5c" element={<ComingSoon title="5C Analysis" description="Details of sanctioned loans." />} />
         <Route path="loan/mortgage-deed" element={<ComingSoon title="Loan Mortgage Deed" description="Details of sanctioned loans." />} />
 

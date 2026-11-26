@@ -199,6 +199,15 @@ router.get('/stats', wrap(async (req, res) => {
     branchFilter ? [branchFilter] : []
   );
 
+  // 12. loannaapisakhaapplications pending
+  const naapiWhere = branchFilter ? 'WHERE BranchID = ?' : '';
+  const [[naapiRow]] = await pool.query(
+    `SELECT COUNT(*) AS total,
+            COALESCE(SUM(COALESCE(ApprovedStatus, 0) = 0), 0) AS pending
+       FROM loannaapisakhaapplications ${naapiWhere}`,
+    branchFilter ? [branchFilter] : []
+  );
+
   const pendingDetail = Number(lRow?.pending || 0);
   const pendingRequest = Number(rRow?.pending || 0);
   const pendingApplication = Number(aRow?.pending || 0);
@@ -210,10 +219,11 @@ router.get('/stats', wrap(async (req, res) => {
   const pendingDhitoTamasuk = Number(dhitoRow?.pending || 0);
   const pendingLoanPurpose = Number(purposeRow?.pending || 0);
   const pendingMalpot = Number(malpotRow?.pending || 0);
-  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule + pendingPratigya + pendingManjurinaama + pendingPariwarikSwikriti + pendingBektigatJamani + pendingDhitoTamasuk + pendingLoanPurpose + pendingMalpot;
+  const pendingNaapiSakha = Number(naapiRow?.pending || 0);
+  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule + pendingPratigya + pendingManjurinaama + pendingPariwarikSwikriti + pendingBektigatJamani + pendingDhitoTamasuk + pendingLoanPurpose + pendingMalpot + pendingNaapiSakha;
 
   res.json({
-    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0) + Number(pratigyaRow?.total || 0) + Number(manjurinaamaRow?.total || 0) + Number(swikritiRow?.total || 0) + Number(jamaniRow?.total || 0) + Number(dhitoRow?.total || 0) + Number(purposeRow?.total || 0) + Number(malpotRow?.total || 0),
+    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0) + Number(pratigyaRow?.total || 0) + Number(manjurinaamaRow?.total || 0) + Number(swikritiRow?.total || 0) + Number(jamaniRow?.total || 0) + Number(dhitoRow?.total || 0) + Number(purposeRow?.total || 0) + Number(malpotRow?.total || 0) + Number(naapiRow?.total || 0),
     pending: totalPending,
     pendingDetail,
     pendingRequest,
@@ -226,6 +236,7 @@ router.get('/stats', wrap(async (req, res) => {
     pendingDhitoTamasuk,
     pendingLoanPurpose,
     pendingMalpot,
+    pendingNaapiSakha,
   });
 }));
 
