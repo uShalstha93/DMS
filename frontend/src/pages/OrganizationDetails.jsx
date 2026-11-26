@@ -21,6 +21,7 @@ export default function OrganizationDetails() {
     tole: '',
     contactno: '',
     panno: '',
+    registerno: '',
     registrationdate: '',
     email: '',
   });
@@ -57,6 +58,7 @@ export default function OrganizationDetails() {
             tole: orgData.tole || '',
             contactno: orgData.contactno || '',
             panno: orgData.panno || '',
+            registerno: orgData.registerno || '',
             registrationdate: orgData.registrationdate || '',
             email: orgData.email || '',
           });
@@ -180,6 +182,7 @@ export default function OrganizationDetails() {
       formData.append('tole', form.tole || '');
       formData.append('contactno', form.contactno || '');
       formData.append('panno', form.panno || '');
+      formData.append('registerno', form.registerno || '');
       formData.append('registrationdate', form.registrationdate || '');
       formData.append('email', form.email || '');
 
@@ -318,6 +321,21 @@ export default function OrganizationDetails() {
                     value={form.panno}
                     onChange={handleChange}
                     placeholder="e.g. 600123456"
+                    className="field tabular-nums"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="registerno" className="label">
+                    Registration No (दर्ता नं.)
+                  </label>
+                  <input
+                    id="registerno"
+                    name="registerno"
+                    type="text"
+                    value={form.registerno}
+                    onChange={handleChange}
+                    placeholder="e.g. 123/2075-076"
                     className="field tabular-nums"
                   />
                 </div>
@@ -567,6 +585,7 @@ export default function OrganizationDetails() {
                   {form.contactno && <span>फोन: {form.contactno}</span>}
                   {form.email && <span>इमेल: {form.email}</span>}
                   {form.panno && <span>स्थायी लेखा नं: {form.panno}</span>}
+                  {form.registerno && <span>दर्ता नं: {form.registerno}</span>}
                 </div>
 
                 <div className="mt-4 border-t border-dashed border-rule pt-3 text-center">

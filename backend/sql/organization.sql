@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS organization_details (
   tole VARCHAR(150) NULL,
   contactno VARCHAR(100) NULL,
   panno VARCHAR(50) NULL,
+  registerno VARCHAR(100) NULL,
   registrationdate VARCHAR(50) NULL,
   logo VARCHAR(255) NULL,
   email VARCHAR(150) NULL,

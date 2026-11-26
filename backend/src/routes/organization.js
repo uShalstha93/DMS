@@ -46,6 +46,7 @@ router.post(
             tole,
             contactno,
             panno,
+            registerno,
             registrationdate,
             email,
             remove_logo,
@@ -88,6 +89,7 @@ router.post(
             cleanField(tole),
             cleanField(contactno),
             cleanField(panno),
+            cleanField(registerno),
             cleanField(registrationdate),
             logoFilename,
             cleanField(email),
@@ -98,7 +100,7 @@ router.post(
             await pool.query(
                 `UPDATE organization_details SET
            companyname = ?, province = ?, district = ?, munvdc = ?, wardno = ?,
-           tole = ?, contactno = ?, panno = ?, registrationdate = ?, logo = ?, email = ?
+           tole = ?, contactno = ?, panno = ?, registerno = ?, registrationdate = ?, logo = ?, email = ?
          WHERE id = ?`,
                 [...data, current.id]
             );
@@ -106,8 +108,8 @@ router.post(
             // Insert first time
             await pool.query(
                 `INSERT INTO organization_details
-           (companyname, province, district, munvdc, wardno, tole, contactno, panno, registrationdate, logo, email)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           (companyname, province, district, munvdc, wardno, tole, contactno, panno, registerno, registrationdate, logo, email)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 data
             );
         }
