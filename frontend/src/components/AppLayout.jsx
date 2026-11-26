@@ -28,7 +28,8 @@ export default function AppLayout() {
       p.includes('loanpariwarikswikriti.approve') ||
       p.includes('loanbektigatjamani.approve') ||
       p.includes('loandhitotamasuk.approve') ||
-      p.includes('loanpurpose.approve')
+      p.includes('loanpurpose.approve') ||
+      p.includes('loanmalpot.approve')
     );
   });
   const [menuOpen, setMenuOpen] = useState(false);

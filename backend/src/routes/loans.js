@@ -190,6 +190,15 @@ router.get('/stats', wrap(async (req, res) => {
     branchFilter ? [branchFilter] : []
   );
 
+  // 11. loanmalpotapplications pending
+  const malpotWhere = branchFilter ? 'WHERE BranchID = ?' : '';
+  const [[malpotRow]] = await pool.query(
+    `SELECT COUNT(*) AS total,
+            COALESCE(SUM(COALESCE(ApprovedStatus, 0) = 0), 0) AS pending
+       FROM loanmalpotapplications ${malpotWhere}`,
+    branchFilter ? [branchFilter] : []
+  );
+
   const pendingDetail = Number(lRow?.pending || 0);
   const pendingRequest = Number(rRow?.pending || 0);
   const pendingApplication = Number(aRow?.pending || 0);
@@ -200,10 +209,11 @@ router.get('/stats', wrap(async (req, res) => {
   const pendingBektigatJamani = Number(jamaniRow?.pending || 0);
   const pendingDhitoTamasuk = Number(dhitoRow?.pending || 0);
   const pendingLoanPurpose = Number(purposeRow?.pending || 0);
-  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule + pendingPratigya + pendingManjurinaama + pendingPariwarikSwikriti + pendingBektigatJamani + pendingDhitoTamasuk + pendingLoanPurpose;
+  const pendingMalpot = Number(malpotRow?.pending || 0);
+  const totalPending = pendingDetail + pendingRequest + pendingApplication + pendingRule + pendingPratigya + pendingManjurinaama + pendingPariwarikSwikriti + pendingBektigatJamani + pendingDhitoTamasuk + pendingLoanPurpose + pendingMalpot;
 
   res.json({
-    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0) + Number(pratigyaRow?.total || 0) + Number(manjurinaamaRow?.total || 0) + Number(swikritiRow?.total || 0) + Number(jamaniRow?.total || 0) + Number(dhitoRow?.total || 0) + Number(purposeRow?.total || 0),
+    total: Number(lRow?.total || 0) + Number(rRow?.total || 0) + Number(aRow?.total || 0) + Number(ruleRow?.total || 0) + Number(pratigyaRow?.total || 0) + Number(manjurinaamaRow?.total || 0) + Number(swikritiRow?.total || 0) + Number(jamaniRow?.total || 0) + Number(dhitoRow?.total || 0) + Number(purposeRow?.total || 0) + Number(malpotRow?.total || 0),
     pending: totalPending,
     pendingDetail,
     pendingRequest,
@@ -215,6 +225,7 @@ router.get('/stats', wrap(async (req, res) => {
     pendingBektigatJamani,
     pendingDhitoTamasuk,
     pendingLoanPurpose,
+    pendingMalpot,
   });
 }));
 

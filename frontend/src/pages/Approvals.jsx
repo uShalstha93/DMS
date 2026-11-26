@@ -16,6 +16,7 @@ import { loanPariwarikSwikritiApi } from '../api/loanPariwarikSwikriti';
 import { loanBektigatJamaniApi } from '../api/loanBektigatJamani';
 import { loanDhitoTamasukApi } from '../api/loanDhitoTamasuk';
 import { loanPurposeApi } from '../api/loanPurpose';
+import { loanMalpotApi } from '../api/loanMalpot';
 import { selectCan } from '../store/authSlice';
 import { date } from '../utils/format';
 import { formatNepaliCurrency } from '../utils/NepaliConverter';
@@ -35,6 +36,7 @@ function PendingLoans() {
   const canApproveJamani = useSelector(selectCan('loanbektigatjamani.approve'));
   const canApproveDhito = useSelector(selectCan('loandhitotamasuk.approve'));
   const canApprovePurpose = useSelector(selectCan('loanpurpose.approve'));
+  const canApproveMalpot = useSelector(selectCan('loanmalpot.approve'));
 
   const [subTab, setSubTab] = useState('all');
   const [loans, setLoans] = useState([]);
@@ -47,6 +49,7 @@ function PendingLoans() {
   const [bektigatJamanis, setBektigatJamanis] = useState([]);
   const [dhitoTamasuks, setDhitoTamasuks] = useState([]);
   const [purposes, setPurposes] = useState([]);
+  const [malpots, setMalpots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -63,8 +66,9 @@ function PendingLoans() {
       loanBektigatJamaniApi.list({ status: 'PENDING' }),
       loanDhitoTamasukApi.list({ status: 'PENDING' }),
       loanPurposeApi.list({ status: 'PENDING' }),
+      loanMalpotApi.list({ status: 'PENDING' }),
     ])
-      .then(([lRes, rRes, aRes, ruleRes, pratigyaRes, manjuriRes, pariwarikRes, jamaniRes, dhitoRes, purposeRes]) => {
+      .then(([lRes, rRes, aRes, ruleRes, pratigyaRes, manjuriRes, pariwarikRes, jamaniRes, dhitoRes, purposeRes, malpotRes]) => {
         if (lRes.status === 'fulfilled') setLoans(lRes.value || []);
         if (rRes.status === 'fulfilled') setRequests(rRes.value || []);
         if (aRes.status === 'fulfilled') setApplications(aRes.value || []);
@@ -75,6 +79,7 @@ function PendingLoans() {
         if (jamaniRes.status === 'fulfilled') setBektigatJamanis(jamaniRes.value || []);
         if (dhitoRes.status === 'fulfilled') setDhitoTamasuks(dhitoRes.value || []);
         if (purposeRes.status === 'fulfilled') setPurposes(purposeRes.value || []);
+        if (malpotRes.status === 'fulfilled') setMalpots(malpotRes.value || []);
         setError('');
       })
       .catch((e) => setError(errorMessage(e, 'ऋण सम्बन्धी विवरण लोड गर्न सकिएन')))
@@ -86,7 +91,7 @@ function PendingLoans() {
   const head = 'px-4 py-3 font-medium';
 
   const filterTabs = [
-    { key: 'all', label: 'सबै (All)', count: loans.length + requests.length + applications.length + rules.length + pratigyas.length + manjurinaamas.length + pariwarikSwikritis.length + bektigatJamanis.length + dhitoTamasuks.length + purposes.length },
+    { key: 'all', label: 'सबै (All)', count: loans.length + requests.length + applications.length + rules.length + pratigyas.length + manjurinaamas.length + pariwarikSwikritis.length + bektigatJamanis.length + dhitoTamasuks.length + purposes.length + malpots.length },
     { key: 'detail', label: 'ऋण विवरण (Detail)', count: loans.length },
     { key: 'request', label: 'ऋण माग (Request)', count: requests.length },
     { key: 'application', label: 'कर्जा प्रस्ताव (Application)', count: applications.length },
@@ -97,6 +102,7 @@ function PendingLoans() {
     { key: 'jamani', label: 'व्यक्तिगत जमानी (Bektigat Jamani)', count: bektigatJamanis.length },
     { key: 'dhito', label: 'धितो तमसुक (Dhito Tamasuk)', count: dhitoTamasuks.length },
     { key: 'purpose', label: 'ऋण सदुपयोग (Purpose of Loan)', count: purposes.length },
+    { key: 'malpot', label: 'मालपोत निवेदन (Malpot Application)', count: malpots.length },
   ];
 
   return (
@@ -777,6 +783,70 @@ function PendingLoans() {
           )}
         </div>
       )}
+
+      {/* Malpot Application (मालपोत निवेदन) */}
+      {(subTab === 'all' || subTab === 'malpot') && canApproveMalpot && (
+        <div className="mb-6">
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-slate-800">मालपोत निवेदन (Malpot Application)</h3>
+            <span className="text-xs text-slate-500">{malpots.length} waiting</span>
+          </div>
+          {malpots.length === 0 ? (
+            <p className="rounded-lg border border-dashed border-slate-200 p-4 text-center text-xs text-slate-400">
+              स्वीकृत गर्न बाँकी कुनै मालपोत निवेदन छैन।
+            </p>
+          ) : (
+            <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
+              <table className="w-full text-left text-xs">
+                <thead className="border-b border-slate-100 bg-slate-50 text-slate-500">
+                  <tr>
+                    <th className={head}>सदस्य नं. / ऋणी नाम</th>
+                    <th className={head}>ऋण नं. / चलानी नं.</th>
+                    <th className={head}>फारम मिति</th>
+                    <th className={head}>ऋण रकम</th>
+                    <th className={head}>मालपोत कार्यालय</th>
+                    <th className={head}>प्रतिनिधि</th>
+                    {allBranches && <th className={head}>शाखा</th>}
+                    <th className={`${head} text-right`}>कार्य</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {malpots.map((m) => (
+                    <tr key={m.id} className="hover:bg-slate-50">
+                      <td className="px-4 py-3 font-medium text-slate-900">
+                        <div>{m.BorrowerName || m.MemberName || '—'}</div>
+                        <div className="text-xs text-slate-400">सदस्य नं: {m.MemberNo}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-slate-900">{m.LoanNo}</div>
+                        <div className="text-xs text-slate-400">चलानी नं: {m.ChalaaniNo || '—'}</div>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-600 font-mono">
+                        {m.EntryDate || '—'}
+                      </td>
+                      <td className="px-4 py-3 tabular-nums font-semibold text-slate-900">
+                        {m.LoanAmount ? `रु. ${formatNepaliCurrency(m.LoanAmount)}` : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-600">
+                        {m.MalpotAddress || '—'}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-600">
+                        {m.PratinidhiName || m.StaffName || '—'}
+                      </td>
+                      {allBranches && <td className="px-4 py-3 text-xs text-slate-500">{m.branch_name || m.BranchID}</td>}
+                      <td className="px-4 py-3 text-right">
+                        <Link to={`/loan/malpot-application/${m.id}`} className="inline-flex items-center gap-1.5 font-medium text-ledger hover:underline">
+                          <Eye size={15} />Review
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
@@ -857,7 +927,8 @@ export default function Approvals() {
       p.includes('loanpariwarikswikriti.approve') ||
       p.includes('loanbektigatjamani.approve') ||
       p.includes('loandhitotamasuk.approve') ||
-      p.includes('loanpurpose.approve')
+      p.includes('loanpurpose.approve') ||
+      p.includes('loanmalpot.approve')
     );
   });
 

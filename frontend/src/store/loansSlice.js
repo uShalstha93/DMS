@@ -19,6 +19,7 @@ const slice = createSlice({
     pendingBektigatJamani: 0,
     pendingDhitoTamasuk: 0,
     pendingLoanPurpose: 0,
+    pendingMalpot: 0,
   },
   reducers: {},
   extraReducers: (b) => {
@@ -35,6 +36,7 @@ const slice = createSlice({
       s.pendingBektigatJamani = payload?.pendingBektigatJamani ?? 0;
       s.pendingDhitoTamasuk = payload?.pendingDhitoTamasuk ?? 0;
       s.pendingLoanPurpose = payload?.pendingLoanPurpose ?? 0;
+      s.pendingMalpot = payload?.pendingMalpot ?? 0;
     });
   },
 });

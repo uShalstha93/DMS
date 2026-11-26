@@ -38,7 +38,7 @@ const GROUPS = [
           { to: '/loan/dhito-tamasuk', label: 'Dhito Tamasuk', perm: 'loandhitotamasuk.view' },
           { to: '/loan/personal-tamasuk', label: 'Personal Tamasuk' },
           { to: '/loan/purpose', label: 'Purpose Of Loan', perm: 'loanpurpose.view' },
-          { to: '/loan/malpot-application', label: 'Malpot Application' },
+          { to: '/loan/malpot-application', label: 'Malpot Application', perm: 'loanmalpot.view' },
           { to: '/loan/naapi-saakha', label: 'Naapi Saakha' },
           { to: '/loan/analysis5c', label: '5C Analysis' },
           { to: '/loan/mortgage-deed', label: 'Loan Mortgage Deed' },
@@ -49,7 +49,7 @@ const GROUPS = [
   },
   {
     title: 'Review',
-    items: [{ to: '/approvals', label: 'Approvals', icon: ClipboardCheck, perm: ['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve', 'loanrule.approve', 'loanpratigya.approve', 'loanmanjurinaama.approve', 'loanpariwarikswikriti.approve', 'loanbektigatjamani.approve', 'loandhitotamasuk.approve', 'loanpurpose.approve'], badge: 'pending' }],
+    items: [{ to: '/approvals', label: 'Approvals', icon: ClipboardCheck, perm: ['document.approve', 'membership.approve', 'loan.approve', 'loanrequest.approve', 'loanapplication.approve', 'loanrule.approve', 'loanpratigya.approve', 'loanmanjurinaama.approve', 'loanpariwarikswikriti.approve', 'loanbektigatjamani.approve', 'loandhitotamasuk.approve', 'loanpurpose.approve', 'loanmalpot.approve'], badge: 'pending' }],
   },
   {
     title: 'Team',
@@ -135,7 +135,8 @@ export default function Sidebar({ open, onClose }) {
     permissions.includes('loanpariwarikswikriti.approve') ||
     permissions.includes('loanbektigatjamani.approve') ||
     permissions.includes('loandhitotamasuk.approve') ||
-    permissions.includes('loanpurpose.approve');
+    permissions.includes('loanpurpose.approve') ||
+    permissions.includes('loanmalpot.approve');
   // Approvals badge: pending documents + pending members + pending loans (only the kinds this person can approve)
   const pending = (permissions.includes('document.approve') ? docPending : 0) +
     (permissions.includes('membership.approve') ? memberPending : 0) +
